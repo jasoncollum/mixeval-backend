@@ -6,16 +6,19 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './auth/user.entity';
 import { TransformInterceptor } from './transform.interceptor';
+import { ArtistsModule } from './artists/artists.module';
+import { Artist } from './artists/artist.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [User],
+      entities: [User, Artist],
       synchronize: true,
     }),
     AuthModule,
+    ArtistsModule,
   ],
   controllers: [AppController],
   providers: [
