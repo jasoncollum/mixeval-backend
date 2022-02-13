@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dtos/create-artist.dto';
@@ -24,5 +24,14 @@ export class ArtistsRepository extends Repository<Artist> {
     } catch (error) {
       throw new ConflictException('Artist already exists');
     }
+  }
+
+  async updateArtist(id: string, attrs: Partial<Artist>): Promise<Artist> {
+    const artist = await this.findOne(id);
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+    Object.assign(artist, attrs);
+    return await this.save(artist);
   }
 }

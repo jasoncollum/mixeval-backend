@@ -12,6 +12,6 @@ export class Artist {
   @Column()
   image_url: string;
 
-  @ManyToOne(() => User, (user) => user.artists)
+  @ManyToOne(() => User, (user) => user.artists, { eager: false })
   user: User;
 }
