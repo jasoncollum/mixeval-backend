@@ -8,6 +8,7 @@ import { User } from './auth/user.entity';
 import { TransformInterceptor } from './transform.interceptor';
 import { ArtistsModule } from './artists/artists.module';
 import { Artist } from './artists/artist.entity';
+import { SongsModule } from './songs/songs.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Artist } from './artists/artist.entity';
     }),
     AuthModule,
     ArtistsModule,
+    SongsModule,
   ],
   controllers: [AppController],
   providers: [
