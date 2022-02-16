@@ -9,6 +9,9 @@ export class Song {
   @Column()
   title: string;
 
+  @Column({ default: true })
+  isOpen: boolean;
+
   @ManyToOne(() => Artist, (artist) => artist.songs)
   artist: Artist;
 }
