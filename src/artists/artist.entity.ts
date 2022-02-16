@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../auth/user.entity';
+import { Song } from '../songs/song.entity';
 
 @Entity()
 export class Artist {
@@ -14,4 +21,7 @@ export class Artist {
 
   @ManyToOne(() => User, (user) => user.artists, { eager: false })
   user: User;
+
+  @OneToMany(() => Song, (song) => song.artist, { eager: true })
+  songs: Song[];
 }
