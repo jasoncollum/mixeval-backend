@@ -12,6 +12,6 @@ export class Song {
   @Column({ default: true })
   isOpen: boolean;
 
-  @ManyToOne(() => Artist, (artist) => artist.songs)
+  @ManyToOne(() => Artist, (artist) => artist.songs, { eager: false })
   artist: Artist;
 }

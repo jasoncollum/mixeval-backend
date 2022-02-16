@@ -22,6 +22,6 @@ export class Artist {
   @ManyToOne(() => User, (user) => user.artists, { eager: false })
   user: User;
 
-  @OneToMany(() => Song, (song) => song.artist)
+  @OneToMany(() => Song, (song) => song.artist, { eager: true })
   songs: Song[];
 }

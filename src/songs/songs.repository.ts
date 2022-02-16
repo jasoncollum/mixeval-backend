@@ -10,7 +10,6 @@ export class SongsRepository extends Repository<Song> {
     createSongDto: CreateSongDto,
     artist: Artist,
   ): Promise<Song> {
-    console.log(artist);
     const song = this.create({
       title: createSongDto.title,
       isOpen: createSongDto.isOpen,
