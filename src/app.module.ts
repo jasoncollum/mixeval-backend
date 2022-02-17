@@ -10,18 +10,21 @@ import { ArtistsModule } from './artists/artists.module';
 import { Artist } from './artists/artist.entity';
 import { SongsModule } from './songs/songs.module';
 import { Song } from './songs/song.entity';
+import { VersionsModule } from './versions/versions.module';
+import { Version } from './versions/version.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [User, Artist, Song],
+      entities: [User, Artist, Song, Version],
       synchronize: true,
     }),
     AuthModule,
     ArtistsModule,
     SongsModule,
+    VersionsModule,
   ],
   controllers: [AppController],
   providers: [
