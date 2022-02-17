@@ -14,6 +14,7 @@ import { VersionsModule } from './versions/versions.module';
 import { Version } from './versions/version.entity';
 import { NotesModule } from './notes/notes.module';
 import { Note } from './notes/note.entity';
+import { RevisionsModule } from './revisions/revisions.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Note } from './notes/note.entity';
     SongsModule,
     VersionsModule,
     NotesModule,
+    RevisionsModule,
   ],
   controllers: [AppController],
   providers: [

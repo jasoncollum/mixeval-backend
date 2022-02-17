@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Version } from '../versions/version.entity';
+import { Revision } from '../revisions/revision.entity';
 
 @Entity()
 export class Note {
@@ -11,4 +18,7 @@ export class Note {
 
   @ManyToOne(() => Version, (version) => version.notes, { eager: false })
   version: Version;
+
+  @OneToMany(() => Revision, (revision) => revision.note)
+  revisions: Revision[];
 }
