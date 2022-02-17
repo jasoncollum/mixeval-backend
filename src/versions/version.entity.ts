@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { Song } from '../songs/song.entity';
+import { Note } from '../notes/note.entity';
 
 @Entity()
 export class Version {
@@ -11,4 +18,7 @@ export class Version {
 
   @ManyToOne(() => Song, (song) => song.versions, { eager: false })
   song: Song;
+
+  @OneToMany(() => Note, (note) => note.version, { eager: true })
+  notes: Note[];
 }
