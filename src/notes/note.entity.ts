@@ -19,6 +19,6 @@ export class Note {
   @ManyToOne(() => Version, (version) => version.notes, { eager: false })
   version: Version;
 
-  @OneToMany(() => Revision, (revision) => revision.note)
+  @OneToMany(() => Revision, (revision) => revision.note, { eager: true })
   revisions: Revision[];
 }

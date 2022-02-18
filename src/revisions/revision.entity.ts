@@ -1,5 +1,4 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { IsString } from 'class-validator';
+import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { Note } from '../notes/note.entity';
 
 @Entity()
@@ -7,9 +6,9 @@ export class Revision {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @IsString()
+  @Column()
   text: string;
 
-  @ManyToOne(() => Note, (note) => note.revisions)
+  @ManyToOne(() => Note, (note) => note.revisions, { eager: false })
   note: Note;
 }
