@@ -14,13 +14,15 @@ import { VersionsModule } from './versions/versions.module';
 import { Version } from './versions/version.entity';
 import { NotesModule } from './notes/notes.module';
 import { Note } from './notes/note.entity';
+import { RevisionsModule } from './revisions/revisions.module';
+import { Revision } from './revisions/revision.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [User, Artist, Song, Version, Note],
+      entities: [User, Artist, Song, Version, Note, Revision],
       synchronize: true,
     }),
     AuthModule,
@@ -28,6 +30,7 @@ import { Note } from './notes/note.entity';
     SongsModule,
     VersionsModule,
     NotesModule,
+    RevisionsModule,
   ],
   controllers: [AppController],
   providers: [
