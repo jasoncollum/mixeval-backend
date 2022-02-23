@@ -1,31 +1,42 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateRevisionDto } from './dtos/create-revision.dto';
-import { RevisionsRepository } from './revisions.repository';
-import { NotesRepository } from '../notes/notes.repository';
 import { Revision } from './revision.entity';
-import { UpdateRevisionDto } from './dtos/update-revision.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Note } from '../notes/note.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RevisionsService {
   constructor(
-    private revisionsRepository: RevisionsRepository,
-    private notesRepository: NotesRepository,
+    @InjectRepository(Revision)
+    private revisionsRepository: Repository<Revision>,
+    @InjectRepository(Note)
+    private notesRepository: Repository<Note>,
   ) {}
 
   async createRevision(
     createRevisionDto: CreateRevisionDto,
   ): Promise<Revision> {
-    const result = await this.notesRepository.find({
+    const note = await this.notesRepository.findOne({
       where: { id: createRevisionDto.noteId },
     });
-    if (!result) {
+    if (!note) {
       throw new NotFoundException('Note not found');
     }
-    const note = result[0];
-    return await this.revisionsRepository.createRevision(
-      createRevisionDto,
+
+    const revision = this.revisionsRepository.create({
+      text: createRevisionDto.text,
       note,
-    );
+    });
+    try {
+      return await this.revisionsRepository.save(revision);
+    } catch (error) {
+      throw new ConflictException('Revision already exists');
+    }
   }
 
   async getRevision(id: string): Promise<Revision> {
@@ -38,9 +49,14 @@ export class RevisionsService {
 
   async updateRevision(
     id: string,
-    updateRevisionDto: UpdateRevisionDto,
+    attrs: Partial<Revision>,
   ): Promise<Revision> {
-    return await this.revisionsRepository.updateRevision(id, updateRevisionDto);
+    const revision = await this.revisionsRepository.findOne(id);
+    if (!revision) {
+      throw new NotFoundException('Revision not found');
+    }
+    Object.assign(revision, attrs);
+    return await this.revisionsRepository.save(revision);
   }
 
   async deleteRevision(id: string): Promise<void> {

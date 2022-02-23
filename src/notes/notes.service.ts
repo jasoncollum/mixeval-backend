@@ -1,26 +1,41 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotesRepository } from './notes.repository';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateNoteDto } from './dtos/create-note.dto';
-import { VersionsRepository } from '../versions/versions.repository';
 import { Note } from './note.entity';
-import { UpdateNoteDto } from './dtos/update-note.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Version } from '../versions/version.entity';
 
 @Injectable()
 export class NotesService {
   constructor(
-    private notesRepository: NotesRepository,
-    private versionsRepository: VersionsRepository,
+    @InjectRepository(Note)
+    private notesRepository: Repository<Note>,
+    @InjectRepository(Version)
+    private versionsRepository: Repository<Version>,
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
-    const result = await this.versionsRepository.find({
+    const version = await this.versionsRepository.findOne({
       where: { id: createNoteDto.versionId },
     });
-    if (!result) {
+    if (!version) {
       throw new NotFoundException('Version not found');
     }
-    const version = result[0];
-    return await this.notesRepository.createNote(createNoteDto, version);
+
+    const note = this.notesRepository.create({
+      text: createNoteDto.text,
+      version,
+    });
+
+    try {
+      return await this.notesRepository.save(note);
+    } catch (error) {
+      throw new ConflictException('Note already exists');
+    }
   }
 
   async getNote(id: string): Promise<Note> {
@@ -31,8 +46,13 @@ export class NotesService {
     return note;
   }
 
-  async updateNote(id: string, updateNoteDto: UpdateNoteDto): Promise<Note> {
-    return await this.notesRepository.updateNote(id, updateNoteDto);
+  async updateNote(id: string, attrs: Partial<Note>): Promise<Note> {
+    const note = await this.notesRepository.findOne(id);
+    if (!note) {
+      throw new NotFoundException('Note not found');
+    }
+    Object.assign(note, attrs);
+    return await this.notesRepository.save(note);
   }
 
   async deleteNote(id: string): Promise<void> {

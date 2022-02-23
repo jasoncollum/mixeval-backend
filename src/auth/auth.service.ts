@@ -1,22 +1,51 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthSignupCredentialsDto } from './dtos/auth-signup-credentials.dto';
 import { AuthSigninCredentialsDto } from './dtos/auth-signin-credentials.dto';
-import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
+import { User } from './user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UsersRepository)
-    private usersRepository: UsersRepository,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  async signup(authCredentialsDto: AuthSignupCredentialsDto): Promise<void> {
-    return await this.usersRepository.createUser(authCredentialsDto);
+  async signup(
+    authSignupCredentialsDto: AuthSignupCredentialsDto,
+  ): Promise<void> {
+    const { username, email, password } = authSignupCredentialsDto;
+
+    //hash
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = this.usersRepository.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      // Improve this messaging when move to postresql
+      // if (error.code === '23505') {
+      //   throw new ConflictExeption('Username already in use');
+      // } else {
+      //   throw new InternalServerErrorException();
+      // }
+      throw new ConflictException('Username or Email already in use');
+    }
   }
 
   async signin(

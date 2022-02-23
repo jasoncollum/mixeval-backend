@@ -2,15 +2,12 @@ import { Module } from '@nestjs/common';
 import { RevisionsService } from './revisions.service';
 import { RevisionsController } from './revisions.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RevisionsRepository } from './revisions.repository';
 import { AuthModule } from '../auth/auth.module';
-import { NotesRepository } from '../notes/notes.repository';
+import { Note } from '../notes/note.entity';
+import { Revision } from './revision.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([RevisionsRepository, NotesRepository]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Revision, Note]), AuthModule],
   providers: [RevisionsService],
   controllers: [RevisionsController],
 })
