@@ -1,26 +1,43 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { SongsRepository } from '../songs/songs.repository';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateVersionDto } from './dtos/create-version.dto';
-import { VersionsRepository } from './versions.repository';
 import { Version } from './version.entity';
-import { UpdateVersionDto } from './dtos/update-version.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Song } from '../songs/song.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class VersionsService {
   constructor(
-    private songsRepository: SongsRepository,
-    private versionsRepository: VersionsRepository,
+    @InjectRepository(Song)
+    private songsRepository: Repository<Song>,
+    @InjectRepository(Version)
+    private versionsRepository: Repository<Version>,
   ) {}
 
   async createVersion(createVersionDto: CreateVersionDto): Promise<Version> {
-    const result = await this.songsRepository.find({
-      id: createVersionDto.songId,
+    const song = await this.songsRepository.findOne({
+      where: {
+        id: createVersionDto.songId,
+      },
     });
-    if (!result) {
+    if (!song) {
       throw new NotFoundException('Song not found');
     }
-    const song = result[0];
-    return await this.versionsRepository.createVersion(createVersionDto, song);
+
+    const version = this.versionsRepository.create({
+      number: createVersionDto.number,
+      song,
+    });
+
+    try {
+      return await this.versionsRepository.save(version);
+    } catch (error) {
+      throw new ConflictException('Version already exists');
+    }
   }
 
   async getVersion(id: string): Promise<Version> {
@@ -31,11 +48,13 @@ export class VersionsService {
     return version;
   }
 
-  async updateVersion(
-    id: string,
-    updateVersionDto: UpdateVersionDto,
-  ): Promise<Version> {
-    return await this.versionsRepository.updateVersion(id, updateVersionDto);
+  async updateVersion(id: string, attrs: Partial<Version>): Promise<Version> {
+    const version = await this.versionsRepository.findOne(id);
+    if (!version) {
+      throw new NotFoundException('Version not found');
+    }
+    Object.assign(version, attrs);
+    return await this.versionsRepository.save(version);
   }
 
   async deleteVersion(id: string): Promise<void> {

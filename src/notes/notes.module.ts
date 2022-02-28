@@ -3,14 +3,11 @@ import { NotesController } from './notes.controller';
 import { NotesService } from './notes.service';
 import { AuthModule } from '../auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotesRepository } from './notes.repository';
-import { VersionsRepository } from '../versions/versions.repository';
+import { Note } from './note.entity';
+import { Version } from '../versions/version.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([NotesRepository, VersionsRepository]),
-    AuthModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Note, Version]), AuthModule],
   controllers: [NotesController],
   providers: [NotesService],
 })
