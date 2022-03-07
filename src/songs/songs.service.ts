@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { CreateSongDto } from './dtos/create-song.dto';
 import { Song } from './song.entity';
-import { Artist } from '../artists/artist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -14,8 +13,6 @@ export class SongsService {
   constructor(
     @InjectRepository(Song)
     private songsRepository: Repository<Song>,
-    @InjectRepository(Artist)
-    private artistsRepository: Repository<Artist>,
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {
