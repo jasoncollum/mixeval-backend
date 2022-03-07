@@ -1,4 +1,5 @@
 import { IsBoolean, IsString } from 'class-validator';
+import { Artist } from '../../artists/artist.entity';
 
 export class CreateSongDto {
   @IsString()
@@ -9,4 +10,6 @@ export class CreateSongDto {
 
   @IsString()
   artistId: string;
+
+  artist: Artist;
 }

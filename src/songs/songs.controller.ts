@@ -13,6 +13,7 @@ import { CreateSongDto } from './dtos/create-song.dto';
 import { UpdateSongDto } from './dtos/update-song.dto';
 import { Song } from './song.entity';
 import { SongsService } from './songs.service';
+import { TakesArtistIdReturnsArtistPipe } from './pipes/takes-artistId-returns-artist.pipe';
 
 @Controller('songs')
 @UseGuards(AuthGuard())
@@ -20,7 +21,9 @@ export class SongsController {
   constructor(private songsService: SongsService) {}
 
   @Post('/')
-  async createSong(@Body() createSongDto: CreateSongDto): Promise<Song> {
+  async createSong(
+    @Body(TakesArtistIdReturnsArtistPipe) createSongDto: CreateSongDto,
+  ) {
     return await this.songsService.createSong(createSongDto);
   }
 

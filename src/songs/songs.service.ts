@@ -19,11 +19,10 @@ export class SongsService {
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {
-    const artist = await this.findArtist(createSongDto.artistId);
     const song = this.songsRepository.create({
       title: createSongDto.title,
       isOpen: createSongDto.isOpen,
-      artist,
+      artist: createSongDto.artist,
     });
 
     try {
@@ -55,16 +54,5 @@ export class SongsService {
     if (result.affected === 0) {
       throw new NotFoundException('Song not found');
     }
-  }
-
-  // Find Artist By ID
-  async findArtist(artistId: string): Promise<Artist> {
-    const result = await this.artistsRepository.find({
-      id: artistId,
-    });
-    if (!result) {
-      throw new NotFoundException('Artist not found');
-    }
-    return result[0];
   }
 }
