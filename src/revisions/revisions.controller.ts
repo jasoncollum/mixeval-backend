@@ -13,6 +13,7 @@ import { RevisionsService } from './revisions.service';
 import { Revision } from './revision.entity';
 import { UpdateRevisionDto } from './dtos/update-revision.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { TakesNoteIdReturnsNotePipe } from './pipes/takes-noteId-returns-note.pipe';
 
 @Controller('revisions')
 @UseGuards(AuthGuard())
@@ -21,7 +22,7 @@ export class RevisionsController {
 
   @Post('/')
   async createRevision(
-    @Body() createRevisionDto: CreateRevisionDto,
+    @Body(TakesNoteIdReturnsNotePipe) createRevisionDto: CreateRevisionDto,
   ): Promise<Revision> {
     return await this.revisionsService.createRevision(createRevisionDto);
   }

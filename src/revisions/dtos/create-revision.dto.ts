@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { Note } from '../../notes/note.entity';
 
 export class CreateRevisionDto {
   @IsString()
@@ -6,4 +7,6 @@ export class CreateRevisionDto {
 
   @IsString()
   noteId: string;
+
+  note: Note;
 }
