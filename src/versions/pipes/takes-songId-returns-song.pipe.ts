@@ -4,7 +4,7 @@ import { Song } from '../../songs/song.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class TakesSongtIdReturnsSongPipe
+export class TakesSongIdReturnsSongPipe
   implements PipeTransform<any, Promise<any>>
 {
   constructor(

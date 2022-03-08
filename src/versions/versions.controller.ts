@@ -13,7 +13,7 @@ import { CreateVersionDto } from './dtos/create-version.dto';
 import { Version } from './version.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateVersionDto } from './dtos/update-version.dto';
-import { TakesSongtIdReturnsSongPipe } from './pipes/takes-songId-returns-song.pipe';
+import { TakesSongIdReturnsSongPipe } from './pipes/takes-songId-returns-song.pipe';
 
 @Controller('versions')
 @UseGuards(AuthGuard())
@@ -22,7 +22,7 @@ export class VersionsController {
 
   @Post('/')
   async createVersion(
-    @Body(TakesSongtIdReturnsSongPipe) createVersionDto: CreateVersionDto,
+    @Body(TakesSongIdReturnsSongPipe) createVersionDto: CreateVersionDto,
   ): Promise<Version> {
     return await this.versionsService.createVersion(createVersionDto);
   }
