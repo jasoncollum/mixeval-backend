@@ -7,28 +7,18 @@ import { CreateNoteDto } from './dtos/create-note.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Version } from '../versions/version.entity';
 
 @Injectable()
 export class NotesService {
   constructor(
     @InjectRepository(Note)
     private notesRepository: Repository<Note>,
-    @InjectRepository(Version)
-    private versionsRepository: Repository<Version>,
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
-    const version = await this.versionsRepository.findOne({
-      where: { id: createNoteDto.versionId },
-    });
-    if (!version) {
-      throw new NotFoundException('Version not found');
-    }
-
     const note = this.notesRepository.create({
       text: createNoteDto.text,
-      version,
+      version: createNoteDto.version,
     });
 
     try {

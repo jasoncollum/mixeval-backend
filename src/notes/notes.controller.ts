@@ -13,6 +13,7 @@ import { CreateNoteDto } from './dtos/create-note.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateNoteDto } from './dtos/update-note.dto';
+import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
@@ -20,7 +21,9 @@ export class NotesController {
   constructor(private notesService: NotesService) {}
 
   @Post('/')
-  async createNote(@Body() createNoteDto: CreateNoteDto): Promise<Note> {
+  async createNote(
+    @Body(TakesVersionIdReturnsVersionPipe) createNoteDto: CreateNoteDto,
+  ): Promise<Note> {
     return await this.notesService.createNote(createNoteDto);
   }
 

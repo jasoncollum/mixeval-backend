@@ -19,18 +19,9 @@ export class VersionsService {
   ) {}
 
   async createVersion(createVersionDto: CreateVersionDto): Promise<Version> {
-    const song = await this.songsRepository.findOne({
-      where: {
-        id: createVersionDto.songId,
-      },
-    });
-    if (!song) {
-      throw new NotFoundException('Song not found');
-    }
-
     const version = this.versionsRepository.create({
       number: createVersionDto.number,
-      song,
+      song: createVersionDto.song,
     });
 
     try {

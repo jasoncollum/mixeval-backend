@@ -1,4 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
+import { Song } from '../../songs/song.entity';
 
 export class CreateVersionDto {
   @IsNumber()
@@ -6,4 +7,6 @@ export class CreateVersionDto {
 
   @IsString()
   songId: string;
+
+  song: Song;
 }

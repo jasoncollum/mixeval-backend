@@ -21,16 +21,9 @@ export class RevisionsService {
   async createRevision(
     createRevisionDto: CreateRevisionDto,
   ): Promise<Revision> {
-    const note = await this.notesRepository.findOne({
-      where: { id: createRevisionDto.noteId },
-    });
-    if (!note) {
-      throw new NotFoundException('Note not found');
-    }
-
     const revision = this.revisionsRepository.create({
       text: createRevisionDto.text,
-      note,
+      note: createRevisionDto.note,
     });
     try {
       return await this.revisionsRepository.save(revision);
