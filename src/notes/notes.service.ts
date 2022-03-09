@@ -16,6 +16,14 @@ export class NotesService {
   ) {}
 
   async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
+    const alreadyExists = createNoteDto.version.notes.filter(
+      (note) => note.text === createNoteDto.text,
+    );
+
+    if (alreadyExists.length > 0) {
+      throw new ConflictException(`This mix note already exists`);
+    }
+
     const note = this.notesRepository.create({
       text: createNoteDto.text,
       version: createNoteDto.version,
@@ -23,9 +31,7 @@ export class NotesService {
 
     try {
       return await this.notesRepository.save(note);
-    } catch (error) {
-      throw new ConflictException('Note already exists');
-    }
+    } catch (error) {}
   }
 
   async getNote(id: string): Promise<Note> {
