@@ -16,6 +16,16 @@ export class SongsService {
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {
+    const alreadyExists = createSongDto.artist.songs.filter(
+      (song) => song.title === createSongDto.title,
+    );
+
+    if (alreadyExists.length > 0) {
+      throw new ConflictException(
+        `${createSongDto.artist.name} already has a song titled ${createSongDto.title}`,
+      );
+    }
+
     const song = this.songsRepository.create({
       title: createSongDto.title,
       isOpen: createSongDto.isOpen,
@@ -24,9 +34,7 @@ export class SongsService {
 
     try {
       return await this.songsRepository.save(song);
-    } catch (error) {
-      throw new ConflictException('Song already exists');
-    }
+    } catch (error) {}
   }
 
   async getSong(id: string): Promise<Song> {

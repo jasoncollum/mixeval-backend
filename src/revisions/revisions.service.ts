@@ -21,15 +21,23 @@ export class RevisionsService {
   async createRevision(
     createRevisionDto: CreateRevisionDto,
   ): Promise<Revision> {
+    const alreadyExists = createRevisionDto.note.revisions.filter(
+      (revision) => revision.text === createRevisionDto.text,
+    );
+
+    if (alreadyExists.length > 0) {
+      throw new ConflictException(
+        `This specific revision already exists for this note`,
+      );
+    }
+
     const revision = this.revisionsRepository.create({
       text: createRevisionDto.text,
       note: createRevisionDto.note,
     });
     try {
       return await this.revisionsRepository.save(revision);
-    } catch (error) {
-      throw new ConflictException('Revision already exists');
-    }
+    } catch (error) {}
   }
 
   async getRevision(id: string): Promise<Revision> {
