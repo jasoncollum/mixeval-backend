@@ -34,19 +34,7 @@ export class NotesService {
     } catch (error) {}
   }
 
-  async getNote(id: string): Promise<Note> {
-    const note = await this.notesRepository.findOne(id);
-    if (!note) {
-      throw new NotFoundException('Note not found');
-    }
-    return note;
-  }
-
-  async updateNote(id: string, attrs: Partial<Note>): Promise<Note> {
-    const note = await this.notesRepository.findOne(id);
-    if (!note) {
-      throw new NotFoundException('Note not found');
-    }
+  async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {
     Object.assign(note, attrs);
     return await this.notesRepository.save(note);
   }
