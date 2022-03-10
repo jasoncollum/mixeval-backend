@@ -40,22 +40,13 @@ export class ArtistsService {
     return await this.artistsRepository.find({ user });
   }
 
-  async updateArtist(id: string, attrs: Partial<Artist>): Promise<Artist> {
-    const artist = await this.artistsRepository.findOne(id);
-    if (!artist) {
-      throw new NotFoundException('Artist not found');
-    }
+  async updateArtist(artist: Artist, attrs: Partial<Artist>): Promise<Artist> {
     Object.assign(artist, attrs);
     return await this.artistsRepository.save(artist);
   }
 
-  async deleteArtist(artistId: string): Promise<string> {
-    const result = await this.artistsRepository.delete(artistId);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`Artist with ID ${artistId} not found`);
-    }
-
-    return 'Artist successfully removed';
+  async deleteArtist(artist: Artist): Promise<void> {
+    await this.artistsRepository.delete(artist.id);
+    return;
   }
 }
