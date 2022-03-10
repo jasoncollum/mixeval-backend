@@ -40,22 +40,10 @@ export class RevisionsService {
     } catch (error) {}
   }
 
-  async getRevision(id: string): Promise<Revision> {
-    const revision = await this.revisionsRepository.findOne(id);
-    if (!revision) {
-      throw new NotFoundException('Revision not found');
-    }
-    return revision;
-  }
-
   async updateRevision(
-    id: string,
+    revision: Revision,
     attrs: Partial<Revision>,
   ): Promise<Revision> {
-    const revision = await this.revisionsRepository.findOne(id);
-    if (!revision) {
-      throw new NotFoundException('Revision not found');
-    }
     Object.assign(revision, attrs);
     return await this.revisionsRepository.save(revision);
   }

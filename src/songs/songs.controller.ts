@@ -14,6 +14,7 @@ import { UpdateSongDto } from './dtos/update-song.dto';
 import { Song } from './song.entity';
 import { SongsService } from './songs.service';
 import { TakesArtistIdReturnsArtistPipe } from './pipes/takes-artistId-returns-artist.pipe';
+import { SongByIdPipe } from './pipes/song-by-id.pipe';
 
 @Controller('songs')
 @UseGuards(AuthGuard())
@@ -28,16 +29,16 @@ export class SongsController {
   }
 
   @Get('/:id')
-  async getSong(@Param('id') id: string): Promise<Song> {
-    return await this.songsService.getSong(id);
+  async getSong(@Param('id', SongByIdPipe) song: Song): Promise<Song> {
+    return song;
   }
 
   @Patch('/:id')
   async updateSong(
-    @Param('id') id: string,
+    @Param('id', SongByIdPipe) song: Song,
     @Body() updateSongDto: UpdateSongDto,
   ): Promise<Song> {
-    return await this.songsService.updateSong(id, updateSongDto);
+    return await this.songsService.updateSong(song, updateSongDto);
   }
 
   @Delete('/:id')

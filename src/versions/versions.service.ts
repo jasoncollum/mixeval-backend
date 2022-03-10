@@ -39,19 +39,10 @@ export class VersionsService {
     } catch (error) {}
   }
 
-  async getVersion(id: string): Promise<Version> {
-    const version = await this.versionsRepository.findOne(id);
-    if (!version) {
-      throw new NotFoundException('Version not found');
-    }
-    return version;
-  }
-
-  async updateVersion(id: string, attrs: Partial<Version>): Promise<Version> {
-    const version = await this.versionsRepository.findOne(id);
-    if (!version) {
-      throw new NotFoundException('Version not found');
-    }
+  async updateVersion(
+    version: Version,
+    attrs: Partial<Version>,
+  ): Promise<Version> {
     Object.assign(version, attrs);
     return await this.versionsRepository.save(version);
   }

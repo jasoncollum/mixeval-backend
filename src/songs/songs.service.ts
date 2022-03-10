@@ -37,19 +37,7 @@ export class SongsService {
     } catch (error) {}
   }
 
-  async getSong(id: string): Promise<Song> {
-    const song = await this.songsRepository.findOne(id);
-    if (!song) {
-      throw new NotFoundException('Song not found');
-    }
-    return song;
-  }
-
-  async updateSong(id: string, attrs: Partial<Song>): Promise<Song> {
-    const song = await this.songsRepository.findOne(id);
-    if (!song) {
-      throw new NotFoundException('Song not found');
-    }
+  async updateSong(song: Song, attrs: Partial<Song>): Promise<Song> {
     Object.assign(song, attrs);
     return await this.songsRepository.save(song);
   }

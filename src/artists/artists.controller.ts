@@ -15,6 +15,7 @@ import { CreateArtistDto } from './dtos/create-artist.dto';
 import { User } from '../auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
+import { ArtistByIdPipe } from './pipes/artist-by-id.pipe';
 
 @Controller('artists')
 @UseGuards(AuthGuard())
@@ -36,14 +37,14 @@ export class ArtistsController {
 
   @Patch('/:id')
   async updateArtist(
-    @Param('id') id: string,
+    @Param('id', ArtistByIdPipe) artist: Artist,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    return await this.artistsService.updateArtist(id, updateArtistDto);
+    return await this.artistsService.updateArtist(artist, updateArtistDto);
   }
 
   @Delete('/:id')
-  async deleteArtist(@Param('id') artistId: string): Promise<string> {
-    return await this.artistsService.deleteArtist(artistId);
+  async deleteArtist(@Param('id') id: string): Promise<string> {
+    return await this.artistsService.deleteArtist(id);
   }
 }

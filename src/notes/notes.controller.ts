@@ -14,6 +14,7 @@ import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateNoteDto } from './dtos/update-note.dto';
 import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
+import { NoteByIdPipe } from './pipes/note-by-id.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
@@ -28,16 +29,16 @@ export class NotesController {
   }
 
   @Get('/:id')
-  async getNote(@Param('id') id: string): Promise<Note> {
-    return await this.notesService.getNote(id);
+  async getNote(@Param('id', NoteByIdPipe) note: Note): Promise<Note> {
+    return note;
   }
 
   @Patch('/:id')
   async updateNote(
-    @Param('id') id: string,
+    @Param('id', NoteByIdPipe) note: Note,
     @Body() updateNoteDto: UpdateNoteDto,
   ): Promise<Note> {
-    return await this.notesService.updateNote(id, updateNoteDto);
+    return await this.notesService.updateNote(note, updateNoteDto);
   }
 
   @Delete('/:id')
