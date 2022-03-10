@@ -45,8 +45,11 @@ export class ArtistsService {
     return await this.artistsRepository.save(artist);
   }
 
-  async deleteArtist(artist: Artist): Promise<void> {
-    await this.artistsRepository.delete(artist.id);
-    return;
+  async deleteArtist(id: string): Promise<string> {
+    const result = await this.artistsRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Artist not found');
+    }
+    return 'Artist successfully removed';
   }
 }

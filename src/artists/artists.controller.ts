@@ -44,9 +44,7 @@ export class ArtistsController {
   }
 
   @Delete('/:id')
-  async deleteArtist(
-    @Param('id', ArtistByIdPipe) artist: Artist,
-  ): Promise<void> {
-    return await this.artistsService.deleteArtist(artist);
+  async deleteArtist(@Param('id') id: string): Promise<string> {
+    return await this.artistsService.deleteArtist(id);
   }
 }
