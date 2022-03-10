@@ -14,6 +14,7 @@ import { Version } from './version.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateVersionDto } from './dtos/update-version.dto';
 import { TakesSongIdReturnsSongPipe } from './pipes/takes-songId-returns-song.pipe';
+import { VersionByIdPipe } from './pipes/version-by-id.pipe';
 
 @Controller('versions')
 @UseGuards(AuthGuard())
@@ -28,16 +29,18 @@ export class VersionsController {
   }
 
   @Get('/:id')
-  async getVersion(@Param('id') id: string): Promise<Version> {
-    return await this.versionsService.getVersion(id);
+  async getVersion(
+    @Param('id', VersionByIdPipe) version: Version,
+  ): Promise<Version> {
+    return version;
   }
 
   @Patch('/:id')
   async updateVersion(
-    @Param('id') id: string,
+    @Param('id', VersionByIdPipe) version: Version,
     @Body() updateVersionDto: UpdateVersionDto,
   ): Promise<Version> {
-    return await this.versionsService.updateVersion(id, updateVersionDto);
+    return await this.versionsService.updateVersion(version, updateVersionDto);
   }
 
   @Delete('/:id')
