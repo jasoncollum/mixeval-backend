@@ -4,26 +4,34 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './auth/user.entity';
 import { TransformInterceptor } from './transform.interceptor';
 import { ArtistsModule } from './artists/artists.module';
-import { Artist } from './artists/artist.entity';
 import { SongsModule } from './songs/songs.module';
-import { Song } from './songs/song.entity';
 import { VersionsModule } from './versions/versions.module';
-import { Version } from './versions/version.entity';
 import { NotesModule } from './notes/notes.module';
-import { Note } from './notes/note.entity';
 import { RevisionsModule } from './revisions/revisions.module';
-import { Revision } from './revisions/revision.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Artist, Song, Version, Note, Revision],
-      synchronize: true,
+    ConfigModule.forRoot({
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: 'postgres',
+          autoLoadEntities: true,
+          synchronize: true,
+          host: configService.get('DB_HOST'),
+          port: configService.get('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_DATABASE'),
+        };
+      },
     }),
     AuthModule,
     ArtistsModule,

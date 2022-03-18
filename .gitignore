@@ -36,3 +36,6 @@ lerna-debug.log*
 # FILES I HAVE ADDED::
 constants.ts
 db.sqlite
+
+.env.stage.dev
+.env.stage.prod
