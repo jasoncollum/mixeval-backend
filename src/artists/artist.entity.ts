@@ -19,9 +19,9 @@ export class Artist {
   @Column()
   image_url: string;
 
-  @ManyToOne(() => User, (user) => user.artists, { eager: false })
+  @ManyToOne(() => User, (user) => user.artists, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => Song, (song) => song.artist, { eager: true })
+  @OneToMany(() => Song, (song) => song.artist)
   songs: Song[];
 }

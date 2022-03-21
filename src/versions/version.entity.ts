@@ -16,9 +16,9 @@ export class Version {
   @Column()
   number: number;
 
-  @ManyToOne(() => Song, (song) => song.versions, { eager: false })
+  @ManyToOne(() => Song, (song) => song.versions, { onDelete: 'CASCADE' })
   song: Song;
 
-  @OneToMany(() => Note, (note) => note.version, { eager: true })
+  @OneToMany(() => Note, (note) => note.version)
   notes: Note[];
 }

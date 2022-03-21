@@ -17,6 +17,6 @@ export class User {
   @Exclude()
   password: string;
 
-  @OneToMany(() => Artist, (artist) => artist.user, { eager: true })
+  @OneToMany(() => Artist, (artist) => artist.user)
   artists: Artist[];
 }

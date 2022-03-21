@@ -19,9 +19,9 @@ export class Song {
   @Column({ default: true })
   isOpen: boolean;
 
-  @ManyToOne(() => Artist, (artist) => artist.songs, { eager: false })
+  @ManyToOne(() => Artist, (artist) => artist.songs, { onDelete: 'CASCADE' })
   artist: Artist;
 
-  @OneToMany(() => Version, (version) => version.song, { eager: true })
+  @OneToMany(() => Version, (version) => version.song)
   versions: Version[];
 }

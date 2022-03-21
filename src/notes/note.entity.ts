@@ -16,9 +16,9 @@ export class Note {
   @Column()
   text: string;
 
-  @ManyToOne(() => Version, (version) => version.notes, { eager: false })
+  @ManyToOne(() => Version, (version) => version.notes, { onDelete: 'CASCADE' })
   version: Version;
 
-  @OneToMany(() => Revision, (revision) => revision.note, { eager: true })
+  @OneToMany(() => Revision, (revision) => revision.note)
   revisions: Revision[];
 }

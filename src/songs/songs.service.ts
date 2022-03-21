@@ -7,12 +7,15 @@ import { CreateSongDto } from './dtos/create-song.dto';
 import { Song } from './song.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Artist } from '../artists/artist.entity';
 
 @Injectable()
 export class SongsService {
   constructor(
     @InjectRepository(Song)
     private songsRepository: Repository<Song>,
+    @InjectRepository(Artist)
+    private artistsRepository: Repository<Artist>,
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {

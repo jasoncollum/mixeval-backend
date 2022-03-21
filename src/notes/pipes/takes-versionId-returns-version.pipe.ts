@@ -13,11 +13,12 @@ export class TakesVersionIdReturnsVersionPipe
     private versionsRepository: Repository<Version>,
   ) {}
   async transform(value): Promise<CreateNoteDto> {
-    const version = await this.versionsRepository.findOne({
-      where: {
-        id: value.versionId,
-      },
-    });
+    const version = await this.versionsRepository
+      .createQueryBuilder('v')
+      .leftJoinAndSelect('v.notes', 'n')
+      .where('v.id = :id', { id: value.versionId })
+      .getOne();
+
     if (!version) {
       throw new NotFoundException('Version not found');
     }

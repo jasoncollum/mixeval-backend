@@ -9,6 +9,6 @@ export class Revision {
   @Column()
   text: string;
 
-  @ManyToOne(() => Note, (note) => note.revisions, { eager: false })
+  @ManyToOne(() => Note, (note) => note.revisions, { onDelete: 'CASCADE' })
   note: Note;
 }

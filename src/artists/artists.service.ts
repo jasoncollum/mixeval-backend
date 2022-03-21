@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import { CreateArtistDto } from './dtos/create-artist.dto';
 import { User } from '../auth/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { GetArtistsFilterDto } from './dtos/get-artists-filter.dto';
 
 @Injectable()
 export class ArtistsService {
@@ -36,8 +38,39 @@ export class ArtistsService {
     }
   }
 
+  async getArtistsWithFilters(
+    filterDto: GetArtistsFilterDto,
+    user: User,
+  ): Promise<Artist[]> {
+    const { hasOpenSongs } = filterDto;
+
+    if (hasOpenSongs) {
+      Boolean(hasOpenSongs);
+      const Artists = await this.artistsRepository
+        .createQueryBuilder('a')
+        .leftJoinAndSelect('a.songs', 's')
+        .leftJoinAndSelect('s.versions', 'v')
+        .leftJoinAndSelect('v.notes', 'n')
+        .leftJoinAndSelect('n.revisions', 'r')
+        .where('a.userId = :userId', { userId: user.id })
+        .andWhere('s.isOpen = :hasOpenSongs', { hasOpenSongs })
+        .getMany();
+
+      return Artists;
+    } else {
+      throw new BadRequestException('hasOpenSongs must be true');
+    }
+  }
+
   async getArtists(user: User): Promise<Artist[]> {
-    return await this.artistsRepository.find({ user });
+    return await this.artistsRepository
+      .createQueryBuilder('a')
+      .leftJoinAndSelect('a.songs', 's')
+      .leftJoinAndSelect('s.versions', 'v')
+      .leftJoinAndSelect('v.notes', 'n')
+      .leftJoinAndSelect('n.revisions', 'r')
+      .where('a.userId = :userId', { userId: user.id })
+      .getMany();
   }
 
   async updateArtist(artist: Artist, attrs: Partial<Artist>): Promise<Artist> {
