@@ -1,4 +1,11 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Note } from '../notes/note.entity';
 
 @Entity()
@@ -9,6 +16,12 @@ export class Revision {
   @Column()
   text: string;
 
-  @ManyToOne(() => Note, (note) => note.revisions, { eager: false })
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @ManyToOne(() => Note, (note) => note.revisions, { onDelete: 'CASCADE' })
   note: Note;
 }

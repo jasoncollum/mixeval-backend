@@ -13,11 +13,12 @@ export class TakesArtistIdReturnsArtistPipe
     private artistsRepository: Repository<Artist>,
   ) {}
   async transform(value): Promise<CreateSongDto> {
-    const artist = await this.artistsRepository.findOne({
-      where: {
-        id: value.artistId,
-      },
-    });
+    const artist = await this.artistsRepository
+      .createQueryBuilder('a')
+      .leftJoinAndSelect('a.songs', 's')
+      .where('a.id = :id', { id: value.artistId })
+      .getOne();
+
     if (!artist) {
       throw new NotFoundException('Artist not found');
     }

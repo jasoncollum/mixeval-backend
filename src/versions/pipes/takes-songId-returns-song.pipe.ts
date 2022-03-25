@@ -13,11 +13,12 @@ export class TakesSongIdReturnsSongPipe
     private songsRepository: Repository<Song>,
   ) {}
   async transform(value): Promise<CreateVersionDto> {
-    const song = await this.songsRepository.findOne({
-      where: {
-        id: value.songId,
-      },
-    });
+    const song = await this.songsRepository
+      .createQueryBuilder('s')
+      .leftJoinAndSelect('s.versions', 'v')
+      .where('s.id = :id', { id: value.songId })
+      .getOne();
+
     if (!song) {
       throw new NotFoundException('Song not found');
     }

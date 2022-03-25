@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/get-user.decorator';
@@ -16,6 +17,7 @@ import { User } from '../auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateArtistDto } from './dtos/update-artist.dto';
 import { ArtistByIdPipe } from './pipes/artist-by-id.pipe';
+import { GetArtistsFilterDto } from './dtos/get-artists-filter.dto';
 
 @Controller('artists')
 @UseGuards(AuthGuard())
@@ -31,8 +33,15 @@ export class ArtistsController {
   }
 
   @Get()
-  async getArtists(@GetUser() user: User): Promise<Artist[]> {
-    return await this.artistsService.getArtists(user);
+  async getArtists(
+    @Query() filterDto: GetArtistsFilterDto,
+    @GetUser() user: User,
+  ): Promise<Artist[]> {
+    if (Object.keys(filterDto).length) {
+      return await this.artistsService.getArtistsWithFilters(filterDto, user);
+    } else {
+      return await this.artistsService.getArtists(user);
+    }
   }
 
   @Patch('/:id')

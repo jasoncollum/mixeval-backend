@@ -13,11 +13,12 @@ export class TakesNoteIdReturnsNotePipe
     private notesRepository: Repository<Note>,
   ) {}
   async transform(value): Promise<CreateRevisionDto> {
-    const note = await this.notesRepository.findOne({
-      where: {
-        id: value.noteId,
-      },
-    });
+    const note = await this.notesRepository
+      .createQueryBuilder('n')
+      .leftJoinAndSelect('n.revisions', 'r')
+      .where('n.id = :id', { id: value.noteId })
+      .getOne();
+
     if (!note) {
       throw new NotFoundException('Note not found');
     }
