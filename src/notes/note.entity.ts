@@ -4,6 +4,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Version } from '../versions/version.entity';
 import { Revision } from '../revisions/revision.entity';
@@ -15,6 +17,12 @@ export class Note {
 
   @Column()
   text: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ManyToOne(() => Version, (version) => version.notes, { onDelete: 'CASCADE' })
   version: Version;

@@ -54,6 +54,7 @@ export class ArtistsService {
         .leftJoinAndSelect('n.revisions', 'r')
         .where('a.userId = :userId', { userId: user.id })
         .andWhere('s.isOpen = :hasOpenSongs', { hasOpenSongs })
+        .orderBy('s.updated_at', 'DESC')
         .getMany();
 
       return Artists;

@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../auth/user.entity';
 import { Song } from '../songs/song.entity';
@@ -18,6 +20,12 @@ export class Artist {
 
   @Column()
   image_url: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ManyToOne(() => User, (user) => user.artists, { onDelete: 'CASCADE' })
   user: User;
