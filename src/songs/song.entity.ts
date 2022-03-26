@@ -27,6 +27,9 @@ export class Song {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ nullable: true })
+  triggerUpdate: Date;
+
   @ManyToOne(() => Artist, (artist) => artist.songs, { onDelete: 'CASCADE' })
   artist: Artist;
 
