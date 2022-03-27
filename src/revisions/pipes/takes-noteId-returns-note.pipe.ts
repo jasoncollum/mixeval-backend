@@ -16,6 +16,7 @@ export class TakesNoteIdReturnsNotePipe
     const note = await this.notesRepository
       .createQueryBuilder('n')
       .leftJoinAndSelect('n.revisions', 'r')
+      .leftJoinAndSelect('n.version', 'v')
       .where('n.id = :id', { id: value.noteId })
       .getOne();
 
