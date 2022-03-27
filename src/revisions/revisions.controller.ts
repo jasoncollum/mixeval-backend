@@ -38,7 +38,7 @@ export class RevisionsController {
   @Patch('/:id')
   async updateRevision(
     @Param('id', RevisionByIdPipe) revision: Revision,
-    @Body() updateRevisionDto: UpdateRevisionDto,
+    @Body(TakesNoteIdReturnsNotePipe) updateRevisionDto: UpdateRevisionDto,
   ): Promise<Revision> {
     return await this.revisionsService.updateRevision(
       revision,
