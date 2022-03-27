@@ -24,8 +24,14 @@ export class Version {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ nullable: true })
+  triggerUpdate: Date;
+
   @ManyToOne(() => Song, (song) => song.versions, { onDelete: 'CASCADE' })
   song: Song;
+
+  @Column()
+  songId: string;
 
   @OneToMany(() => Note, (note) => note.version)
   notes: Note[];
