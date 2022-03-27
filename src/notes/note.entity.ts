@@ -27,6 +27,9 @@ export class Note {
   @ManyToOne(() => Version, (version) => version.notes, { onDelete: 'CASCADE' })
   version: Version;
 
+  @Column()
+  versionId: string;
+
   @OneToMany(() => Revision, (revision) => revision.note)
   revisions: Revision[];
 }

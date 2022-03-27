@@ -36,7 +36,7 @@ export class NotesController {
   @Patch('/:id')
   async updateNote(
     @Param('id', NoteByIdPipe) note: Note,
-    @Body() updateNoteDto: UpdateNoteDto,
+    @Body(TakesVersionIdReturnsVersionPipe) updateNoteDto: UpdateNoteDto,
   ): Promise<Note> {
     return await this.notesService.updateNote(note, updateNoteDto);
   }
