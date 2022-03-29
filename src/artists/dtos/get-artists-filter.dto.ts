@@ -1,9 +1,13 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsBoolean } from 'class-validator';
+import { IsOptional, IsBoolean, IsString } from 'class-validator';
 
 export class GetArtistsFilterDto {
   @IsOptional()
   @IsBoolean()
   @Type(() => Boolean)
   hasOpenSongs: boolean;
+
+  @IsOptional()
+  @IsString()
+  searchText: string;
 }

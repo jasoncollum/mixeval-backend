@@ -43,6 +43,7 @@ export class ArtistsService {
     user: User,
   ): Promise<Artist[]> {
     const { hasOpenSongs } = filterDto;
+    let { searchText } = filterDto;
 
     if (hasOpenSongs) {
       Boolean(hasOpenSongs);
@@ -58,8 +59,28 @@ export class ArtistsService {
         .getMany();
 
       return Artists;
-    } else {
-      throw new BadRequestException('hasOpenSongs must be true');
+    }
+
+    if (searchText) {
+      searchText = searchText.toLowerCase();
+      console.log(searchText);
+      const Artists = await this.artistsRepository
+        .createQueryBuilder('a')
+        .leftJoinAndSelect('a.songs', 's')
+        .leftJoinAndSelect('s.versions', 'v')
+        .leftJoinAndSelect('v.notes', 'n')
+        .leftJoinAndSelect('n.revisions', 'r')
+        .where('a.userId = :userId', { userId: user.id })
+        .andWhere('LOWER(a.name) like :name', {
+          name: `%${searchText}%`,
+        })
+        .orWhere('LOWER(s.title) like :title', {
+          title: `%${searchText}%`,
+        })
+        .orderBy('s.updated_at', 'DESC')
+        .getMany();
+
+      return Artists;
     }
   }
 
