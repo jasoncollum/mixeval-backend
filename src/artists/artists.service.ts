@@ -57,6 +57,8 @@ export class ArtistsService {
         .andWhere('s.isOpen = :hasOpenSongs', { hasOpenSongs })
         .orderBy('s.updated_at', 'DESC')
         .addOrderBy('v.number', 'DESC')
+        .addOrderBy('n.created_at', 'ASC')
+        .addOrderBy('r.created_at', 'ASC')
         .getMany();
 
       return Artists;
@@ -80,6 +82,8 @@ export class ArtistsService {
         })
         .orderBy('s.updated_at', 'DESC')
         .addOrderBy('v.number', 'DESC')
+        .addOrderBy('n.created_at', 'ASC')
+        .addOrderBy('r.created_at', 'ASC')
         .getMany();
 
       return Artists;
@@ -96,6 +100,8 @@ export class ArtistsService {
       .where('a.userId = :userId', { userId: user.id })
       .orderBy('s.updated_at', 'DESC')
       .addOrderBy('v.number', 'DESC')
+      .addOrderBy('n.created_at', 'ASC')
+      .addOrderBy('r.created_at', 'ASC')
       .getMany();
   }
 
