@@ -56,6 +56,9 @@ export class ArtistsService {
         .where('a.userId = :userId', { userId: user.id })
         .andWhere('s.isOpen = :hasOpenSongs', { hasOpenSongs })
         .orderBy('s.updated_at', 'DESC')
+        .addOrderBy('v.number', 'DESC')
+        .addOrderBy('n.created_at', 'ASC')
+        .addOrderBy('r.created_at', 'ASC')
         .getMany();
 
       return Artists;
@@ -78,6 +81,9 @@ export class ArtistsService {
           title: `%${searchText}%`,
         })
         .orderBy('s.updated_at', 'DESC')
+        .addOrderBy('v.number', 'DESC')
+        .addOrderBy('n.created_at', 'ASC')
+        .addOrderBy('r.created_at', 'ASC')
         .getMany();
 
       return Artists;
@@ -92,6 +98,10 @@ export class ArtistsService {
       .leftJoinAndSelect('v.notes', 'n')
       .leftJoinAndSelect('n.revisions', 'r')
       .where('a.userId = :userId', { userId: user.id })
+      .orderBy('s.updated_at', 'DESC')
+      .addOrderBy('v.number', 'DESC')
+      .addOrderBy('n.created_at', 'ASC')
+      .addOrderBy('r.created_at', 'ASC')
       .getMany();
   }
 
