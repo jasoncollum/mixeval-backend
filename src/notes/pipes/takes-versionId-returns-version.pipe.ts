@@ -2,17 +2,17 @@ import { Injectable, PipeTransform, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Version } from '../../versions/version.entity';
 import { Repository } from 'typeorm';
-import { CreateNoteDto } from '../dtos/create-note.dto';
+import { NoteDto } from '../dtos/note.dto';
 
 @Injectable()
 export class TakesVersionIdReturnsVersionPipe
-  implements PipeTransform<CreateNoteDto, Promise<CreateNoteDto>>
+  implements PipeTransform<NoteDto, Promise<NoteDto>>
 {
   constructor(
     @InjectRepository(Version)
     private versionsRepository: Repository<Version>,
   ) {}
-  async transform(value): Promise<CreateNoteDto> {
+  async transform(value): Promise<NoteDto> {
     const version = await this.versionsRepository
       .createQueryBuilder('v')
       .leftJoinAndSelect('v.notes', 'n')

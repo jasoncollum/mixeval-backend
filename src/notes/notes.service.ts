@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { CreateNoteDto } from './dtos/create-note.dto';
+import { NoteDto } from './dtos/note.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,9 +15,9 @@ export class NotesService {
     private notesRepository: Repository<Note>,
   ) {}
 
-  async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
-    const alreadyExists = createNoteDto.version.notes.filter(
-      (note) => note.text === createNoteDto.text,
+  async createNote(noteDto: NoteDto): Promise<Note> {
+    const alreadyExists = noteDto.version.notes.filter(
+      (note) => note.text === noteDto.text,
     );
 
     if (alreadyExists.length > 0) {
@@ -25,8 +25,8 @@ export class NotesService {
     }
 
     const note = this.notesRepository.create({
-      text: createNoteDto.text,
-      version: createNoteDto.version,
+      text: noteDto.text,
+      version: noteDto.version,
     });
 
     try {
