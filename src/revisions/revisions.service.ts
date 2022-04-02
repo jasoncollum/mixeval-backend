@@ -3,10 +3,9 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { CreateRevisionDto } from './dtos/create-revision.dto';
+import { RevisionDto } from './dtos/revision.dto';
 import { Revision } from './revision.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Note } from '../notes/note.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,15 +13,11 @@ export class RevisionsService {
   constructor(
     @InjectRepository(Revision)
     private revisionsRepository: Repository<Revision>,
-    @InjectRepository(Note)
-    private notesRepository: Repository<Note>,
   ) {}
 
-  async createRevision(
-    createRevisionDto: CreateRevisionDto,
-  ): Promise<Revision> {
-    const alreadyExists = createRevisionDto.note.revisions.filter(
-      (revision) => revision.text === createRevisionDto.text,
+  async createRevision(revisionDto: RevisionDto): Promise<Revision> {
+    const alreadyExists = revisionDto.note.revisions.filter(
+      (revision) => revision.text === revisionDto.text,
     );
 
     if (alreadyExists.length > 0) {
@@ -32,8 +27,8 @@ export class RevisionsService {
     }
 
     const revision = this.revisionsRepository.create({
-      text: createRevisionDto.text,
-      note: createRevisionDto.note,
+      text: revisionDto.text,
+      note: revisionDto.note,
     });
     try {
       return await this.revisionsRepository.save(revision);
