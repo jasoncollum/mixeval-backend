@@ -8,10 +8,9 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CreateRevisionDto } from './dtos/create-revision.dto';
+import { RevisionDto } from './dtos/revision.dto';
 import { RevisionsService } from './revisions.service';
 import { Revision } from './revision.entity';
-import { UpdateRevisionDto } from './dtos/update-revision.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { TakesNoteIdReturnsNotePipe } from './pipes/takes-noteId-returns-note.pipe';
 import { RevisionByIdPipe } from './pipes/revision-by-id.pipe';
@@ -23,9 +22,9 @@ export class RevisionsController {
 
   @Post('/')
   async createRevision(
-    @Body(TakesNoteIdReturnsNotePipe) createRevisionDto: CreateRevisionDto,
+    @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
   ): Promise<Revision> {
-    return await this.revisionsService.createRevision(createRevisionDto);
+    return await this.revisionsService.createRevision(revisionDto);
   }
 
   @Get('/:id')
@@ -38,12 +37,9 @@ export class RevisionsController {
   @Patch('/:id')
   async updateRevision(
     @Param('id', RevisionByIdPipe) revision: Revision,
-    @Body(TakesNoteIdReturnsNotePipe) updateRevisionDto: UpdateRevisionDto,
+    @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
   ): Promise<Revision> {
-    return await this.revisionsService.updateRevision(
-      revision,
-      updateRevisionDto,
-    );
+    return await this.revisionsService.updateRevision(revision, revisionDto);
   }
 
   @Delete('/:id')

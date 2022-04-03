@@ -9,10 +9,9 @@ import {
   Delete,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { CreateNoteDto } from './dtos/create-note.dto';
+import { NoteDto } from './dtos/note.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateNoteDto } from './dtos/update-note.dto';
 import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
 
@@ -23,9 +22,9 @@ export class NotesController {
 
   @Post('/')
   async createNote(
-    @Body(TakesVersionIdReturnsVersionPipe) createNoteDto: CreateNoteDto,
+    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
   ): Promise<Note> {
-    return await this.notesService.createNote(createNoteDto);
+    return await this.notesService.createNote(noteDto);
   }
 
   @Get('/:id')
@@ -36,9 +35,9 @@ export class NotesController {
   @Patch('/:id')
   async updateNote(
     @Param('id', NoteByIdPipe) note: Note,
-    @Body(TakesVersionIdReturnsVersionPipe) updateNoteDto: UpdateNoteDto,
+    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
   ): Promise<Note> {
-    return await this.notesService.updateNote(note, updateNoteDto);
+    return await this.notesService.updateNote(note, noteDto);
   }
 
   @Delete('/:id')
