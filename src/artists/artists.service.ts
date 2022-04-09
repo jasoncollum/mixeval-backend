@@ -21,6 +21,13 @@ export class ArtistsService {
     createArtistDto: CreateArtistDto,
     user: User,
   ): Promise<Artist> {
+    const exists = await this.artistsRepository.findOne({
+      name: createArtistDto.name,
+    });
+    if (exists) {
+      throw new ConflictException('Artist with this name already exists');
+    }
+
     if (!createArtistDto.image_url) {
       // link to a default image at some point ***
       createArtistDto.image_url = '/default/image_url';
@@ -30,11 +37,7 @@ export class ArtistsService {
       user,
     });
 
-    try {
-      return await this.artistsRepository.save(artist);
-    } catch (error) {
-      throw new ConflictException('Artist already exists');
-    }
+    return await this.artistsRepository.save(artist);
   }
 
   async getArtistsWithFilters(
