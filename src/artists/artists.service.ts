@@ -21,11 +21,16 @@ export class ArtistsService {
     createArtistDto: CreateArtistDto,
     user: User,
   ): Promise<Artist> {
-    const exists = await this.artistsRepository.findOne({
-      name: createArtistDto.name,
-    });
-    if (exists) {
-      throw new ConflictException('Artist with this name already exists');
+    const alreadyExists = await this.artistsRepository
+      .createQueryBuilder('artist')
+      .where('artist.name = :name', { name: createArtistDto.name })
+      .andWhere('artist.userId = :id', { id: user.id })
+      .getOne();
+
+    if (alreadyExists) {
+      throw new ConflictException(
+        `An artist with the name ${createArtistDto.name} already exists`,
+      );
     }
 
     if (!createArtistDto.image_url) {
