@@ -21,6 +21,18 @@ export class ArtistsService {
     createArtistDto: CreateArtistDto,
     user: User,
   ): Promise<Artist> {
+    const alreadyExists = await this.artistsRepository
+      .createQueryBuilder('artist')
+      .where('artist.name = :name', { name: createArtistDto.name })
+      .andWhere('artist.userId = :id', { id: user.id })
+      .getOne();
+
+    if (alreadyExists) {
+      throw new ConflictException(
+        `An artist with the name ${createArtistDto.name} already exists`,
+      );
+    }
+
     if (!createArtistDto.image_url) {
       // link to a default image at some point ***
       createArtistDto.image_url = '/default/image_url';
@@ -30,11 +42,7 @@ export class ArtistsService {
       user,
     });
 
-    try {
-      return await this.artistsRepository.save(artist);
-    } catch (error) {
-      throw new ConflictException('Artist already exists');
-    }
+    return await this.artistsRepository.save(artist);
   }
 
   async getArtistsWithFilters(
