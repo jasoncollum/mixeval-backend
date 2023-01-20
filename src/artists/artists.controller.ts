@@ -44,6 +44,12 @@ export class ArtistsController {
     }
   }
 
+  // Get artists details only
+  @Get('/details')
+  async getArtistsDetails(@GetUser() user: User): Promise<Artist[]> {
+    return await this.artistsService.getArtistsDetails(user);
+  }
+
   @Patch('/:id')
   async updateArtist(
     @Param('id', ArtistByIdPipe) artist: Artist,

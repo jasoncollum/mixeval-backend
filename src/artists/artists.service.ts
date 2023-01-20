@@ -112,6 +112,16 @@ export class ArtistsService {
       .getMany();
   }
 
+  // Get all artists details only
+  async getArtistsDetails(user: User): Promise<Artist[]> {
+    return await this.artistsRepository
+      .createQueryBuilder('a')
+      .select(['a.id', 'a.name'])
+      .where('a.userId = :userId', { userId: user.id })
+      .orderBy('a.name', 'ASC')
+      .getMany();
+  }
+
   async updateArtist(artist: Artist, attrs: Partial<Artist>): Promise<Artist> {
     Object.assign(artist, attrs);
     return await this.artistsRepository.save(artist);
