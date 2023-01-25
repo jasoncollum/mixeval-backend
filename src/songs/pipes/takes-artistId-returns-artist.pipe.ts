@@ -15,7 +15,6 @@ export class TakesArtistIdReturnsArtistPipe
   async transform(value): Promise<CreateSongDto> {
     const artist = await this.artistsRepository
       .createQueryBuilder('a')
-      .leftJoinAndSelect('a.songs', 's')
       .where('a.id = :id', { id: value.artistId })
       .getOne();
 
