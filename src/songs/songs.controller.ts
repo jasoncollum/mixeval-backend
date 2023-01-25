@@ -24,7 +24,7 @@ export class SongsController {
   @Post('/')
   async createSong(
     @Body(TakesArtistIdReturnsArtistPipe) createSongDto: CreateSongDto,
-  ) {
+  ): Promise<Song> {
     return await this.songsService.createSong(createSongDto);
   }
 

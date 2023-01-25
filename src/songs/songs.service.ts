@@ -7,28 +7,16 @@ import { CreateSongDto } from './dtos/create-song.dto';
 import { Song } from './song.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Artist } from '../artists/artist.entity';
+// import { Artist } from '../artists/artist.entity';
 
 @Injectable()
 export class SongsService {
   constructor(
     @InjectRepository(Song)
     private songsRepository: Repository<Song>,
-    @InjectRepository(Artist)
-    private artistsRepository: Repository<Artist>,
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {
-    const alreadyExists = createSongDto.artist.songs.filter(
-      (song) => song.title === createSongDto.title,
-    );
-
-    if (alreadyExists.length > 0) {
-      throw new ConflictException(
-        `${createSongDto.artist.name} already has a song titled ${createSongDto.title}`,
-      );
-    }
-
     const song = this.songsRepository.create({
       title: createSongDto.title,
       isOpen: createSongDto.isOpen,
@@ -37,7 +25,15 @@ export class SongsService {
 
     try {
       return await this.songsRepository.save(song);
-    } catch (error) {}
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException(
+          `${createSongDto.artist.name} already has a song titled ${createSongDto.title}`,
+        );
+      } else {
+        return error;
+      }
+    }
   }
 
   async updateSong(song: Song, attrs: Partial<Song>): Promise<Song> {
