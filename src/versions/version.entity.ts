@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   OneToMany,
@@ -11,6 +12,7 @@ import { Song } from '../songs/song.entity';
 import { Note } from '../notes/note.entity';
 
 @Entity()
+@Index(['number', 'song'], { unique: true })
 export class Version {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -11,5 +11,6 @@ import { VersionsSubscriber } from '../subscriber/versions.subscriber';
   imports: [TypeOrmModule.forFeature([Version, Song]), AuthModule],
   controllers: [VersionsController],
   providers: [VersionsService, VersionsSubscriber],
+  exports: [VersionsService],
 })
 export class VersionsModule {}

@@ -7,13 +7,14 @@ import { CreateSongDto } from './dtos/create-song.dto';
 import { Song } from './song.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { VersionsService } from '../versions/versions.service';
 // import { Artist } from '../artists/artist.entity';
 
 @Injectable()
 export class SongsService {
   constructor(
-    @InjectRepository(Song)
-    private songsRepository: Repository<Song>,
+    @InjectRepository(Song) private songsRepository: Repository<Song>,
+    private readonly versionsService: VersionsService,
   ) {}
 
   async createSong(createSongDto: CreateSongDto): Promise<Song> {
@@ -24,7 +25,18 @@ export class SongsService {
     });
 
     try {
-      return await this.songsRepository.save(song);
+      const savedSong = await this.songsRepository.save(song);
+      // if song successfully created, create mix version 1
+      if (savedSong.id) {
+        const version1 = await this.versionsService.createVersion({
+          number: 1,
+          songId: savedSong.id,
+          song: savedSong,
+        });
+        // add versions array including mix version 1 to new song
+        savedSong.versions = [version1];
+      }
+      return savedSong;
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException(
