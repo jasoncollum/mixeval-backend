@@ -6,28 +6,28 @@ import {
 import { CreateVersionDto } from './dtos/create-version.dto';
 import { Version } from './version.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Song } from '../songs/song.entity';
+// import { Song } from '../songs/song.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class VersionsService {
   constructor(
-    @InjectRepository(Song)
-    private songsRepository: Repository<Song>,
+    // @InjectRepository(Song)
+    // private songsRepository: Repository<Song>,
     @InjectRepository(Version)
     private versionsRepository: Repository<Version>,
   ) {}
 
   async createVersion(createVersionDto: CreateVersionDto): Promise<Version> {
-    const alreadyExists = createVersionDto.song.versions.filter(
-      (version) => version.number === createVersionDto.number,
-    );
+    // const alreadyExists = createVersionDto.song.versions.filter(
+    //   (version) => version.number === createVersionDto.number,
+    // );
 
-    if (alreadyExists.length > 0) {
-      throw new ConflictException(
-        `${createVersionDto.song.title} already has a Mix Version # ${createVersionDto.number}`,
-      );
-    }
+    // if (alreadyExists.length > 0) {
+    //   throw new ConflictException(
+    //     `${createVersionDto.song.title} already has a Mix Version # ${createVersionDto.number}`,
+    //   );
+    // }
 
     const version = this.versionsRepository.create({
       number: createVersionDto.number,
@@ -36,7 +36,15 @@ export class VersionsService {
 
     try {
       return await this.versionsRepository.save(version);
-    } catch (error) {}
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException(
+          `${createVersionDto.song.title} already has a version number ${createVersionDto.number}`,
+        );
+      } else {
+        return error;
+      }
+    }
   }
 
   async updateVersion(
