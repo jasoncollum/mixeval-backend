@@ -35,6 +35,9 @@ export class Song {
   @ManyToOne(() => Artist, (artist) => artist.songs, { onDelete: 'CASCADE' })
   artist: Artist;
 
+  @Column()
+  artistId: string;
+
   @OneToMany(() => Version, (version) => version.song)
   versions: Version[];
 }
