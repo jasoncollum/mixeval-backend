@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { NoteDto } from './dtos/note.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,23 +11,12 @@ export class NotesService {
     private notesRepository: Repository<Note>,
   ) {}
 
-  async createNote(noteDto: NoteDto): Promise<Note> {
-    const alreadyExists = noteDto.version.notes.filter(
-      (note) => note.text === noteDto.text,
-    );
-
-    if (alreadyExists.length > 0) {
-      throw new ConflictException(`This mix note already exists`);
-    }
-
-    const note = this.notesRepository.create({
-      text: noteDto.text,
-      version: noteDto.version,
-    });
-
+  async createBulkNotes(newNotes: NoteDto[]): Promise<NoteDto[]> {
     try {
-      return await this.notesRepository.save(note);
-    } catch (error) {}
+      return await this.notesRepository.save(newNotes);
+    } catch (error) {
+      // add a custom exception message here ?
+    }
   }
 
   async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {

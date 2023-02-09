@@ -7,6 +7,7 @@ import {
   Param,
   Get,
   Delete,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { NoteDto } from './dtos/note.dto';
@@ -21,10 +22,14 @@ export class NotesController {
   constructor(private notesService: NotesService) {}
 
   @Post('/')
-  async createNote(
-    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
-  ): Promise<Note> {
-    return await this.notesService.createNote(noteDto);
+  async createBulkNotes(
+    @Body(
+      new ParseArrayPipe({ items: NoteDto }),
+      TakesVersionIdReturnsVersionPipe,
+    )
+    newNotes: NoteDto[],
+  ): Promise<NoteDto[]> {
+    return await this.notesService.createBulkNotes(newNotes);
   }
 
   @Get('/:id')
