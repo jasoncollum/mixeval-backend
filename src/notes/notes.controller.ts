@@ -55,8 +55,16 @@ export class NotesController {
   //   return await this.notesService.updateNote(note, noteDto);
   // }
 
-  @Delete('/:id')
-  async deleteNote(@Param('id') id: string): Promise<void> {
-    return await this.notesService.deleteNote(id);
+  @Delete('/')
+  async deleteBulkNotes(
+    @Body(new ParseArrayPipe({ items: String }))
+    deletedNoteIds: string[],
+  ): Promise<void> {
+    return await this.notesService.deleteBulkNotes(deletedNoteIds);
   }
+
+  // @Delete('/:id')
+  // async deleteNote(@Param('id') id: string): Promise<void> {
+  //   return await this.notesService.deleteNote(id);
+  // }
 }

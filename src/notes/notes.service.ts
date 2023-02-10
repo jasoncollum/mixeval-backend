@@ -34,10 +34,18 @@ export class NotesService {
     }
   }
 
-  async deleteNote(id: string): Promise<void> {
-    const result = await this.notesRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Note not found');
+  async deleteBulkNotes(deletedNoteIds: string[]): Promise<void> {
+    try {
+      await this.notesRepository.delete(deletedNoteIds);
+    } catch (error) {
+      // throw new NotFoundException('Note not found');
     }
   }
+
+  // async deleteNote(id: string): Promise<void> {
+  //   const result = await this.notesRepository.delete(id);
+  //   if (result.affected === 0) {
+  //     throw new NotFoundException('Note not found');
+  //   }
+  // }
 }
