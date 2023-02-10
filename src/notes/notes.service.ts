@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { NoteDto } from './dtos/note.dto';
+import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,9 +20,18 @@ export class NotesService {
     }
   }
 
-  async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {
-    Object.assign(note, attrs);
-    return await this.notesRepository.save(note);
+  // async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {
+  //   Object.assign(note, attrs);
+  //   return await this.notesRepository.save(note);
+  // }
+
+  async updateBulkNotes(updateNotes: UpdateNoteDto[]): Promise<void> {
+    try {
+      console.log('SERVICE::', updateNotes);
+      await this.notesRepository.upsert(updateNotes, ['id']);
+    } catch (error) {
+      // add a custom exception message here ?
+    }
   }
 
   async deleteNote(id: string): Promise<void> {

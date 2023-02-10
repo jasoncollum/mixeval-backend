@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { NoteDto } from './dtos/note.dto';
+import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
@@ -37,13 +38,22 @@ export class NotesController {
     return note;
   }
 
-  @Patch('/:id')
-  async updateNote(
-    @Param('id', NoteByIdPipe) note: Note,
-    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
-  ): Promise<Note> {
-    return await this.notesService.updateNote(note, noteDto);
+  @Patch('/')
+  async updateBulkNotes(
+    @Body(new ParseArrayPipe({ items: UpdateNoteDto }))
+    updateNotes: UpdateNoteDto[],
+  ): Promise<void> {
+    console.log('CONTROLLER::', updateNotes);
+    return await this.notesService.updateBulkNotes(updateNotes);
   }
+
+  // @Patch('/:id')
+  // async updateNote(
+  //   @Param('id', NoteByIdPipe) note: Note,
+  //   @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
+  // ): Promise<Note> {
+  //   return await this.notesService.updateNote(note, noteDto);
+  // }
 
   @Delete('/:id')
   async deleteNote(@Param('id') id: string): Promise<void> {
