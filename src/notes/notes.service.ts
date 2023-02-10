@@ -14,6 +14,7 @@ export class NotesService {
 
   async createBulkNotes(newNotes: NoteDto[]): Promise<NoteDto[]> {
     try {
+      // NoteDro now has instances of note via repo create method in pipe
       return await this.notesRepository.save(newNotes);
     } catch (error) {
       // add a custom exception message here ?
@@ -27,8 +28,8 @@ export class NotesService {
 
   async updateBulkNotes(updateNotes: UpdateNoteDto[]): Promise<void> {
     try {
-      console.log('SERVICE::', updateNotes);
-      await this.notesRepository.upsert(updateNotes, ['id']);
+      // await this.notesRepository.upsert(updateNotes, ['id']);
+      await this.notesRepository.save(updateNotes);
     } catch (error) {
       // add a custom exception message here ?
     }

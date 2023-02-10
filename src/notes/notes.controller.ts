@@ -14,8 +14,9 @@ import { NoteDto } from './dtos/note.dto';
 import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
+// import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
+import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
@@ -25,8 +26,8 @@ export class NotesController {
   @Post('/')
   async createBulkNotes(
     @Body(
-      new ParseArrayPipe({ items: NoteDto }),
-      TakesVersionIdReturnsVersionPipe,
+      // new ParseArrayPipe({ items: NoteDto }),
+      TakesArrayReturnsNotesArrayPipe,
     )
     newNotes: NoteDto[],
   ): Promise<NoteDto[]> {
@@ -40,7 +41,7 @@ export class NotesController {
 
   @Patch('/')
   async updateBulkNotes(
-    @Body(new ParseArrayPipe({ items: UpdateNoteDto }))
+    @Body(TakesArrayReturnsNotesArrayPipe)
     updateNotes: UpdateNoteDto[],
   ): Promise<void> {
     console.log('CONTROLLER::', updateNotes);
