@@ -2,12 +2,12 @@ import { Injectable, PipeTransform, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Version } from '../../versions/version.entity';
 import { Repository } from 'typeorm';
-import { NewNoteDto } from '../dtos/newNote.dto';
+import { UpdateNoteDto } from '../dtos/updateNote.dto';
 import { Note } from '../note.entity';
 
 @Injectable()
-export class ValidateNotesPipe
-  implements PipeTransform<NewNoteDto[], Promise<NewNoteDto[]>>
+export class ValidateUpdateNotesPipe
+  implements PipeTransform<UpdateNoteDto[], Promise<UpdateNoteDto[]>>
 {
   constructor(
     @InjectRepository(Version)
@@ -15,7 +15,7 @@ export class ValidateNotesPipe
     @InjectRepository(Note)
     private notesRepository: Repository<Note>,
   ) {}
-  async transform(value: NewNoteDto[]): Promise<NewNoteDto[]> {
+  async transform(value: UpdateNoteDto[]): Promise<UpdateNoteDto[]> {
     const version = await this.versionsRepository.findOne({
       where: {
         id: value[0].versionId,
@@ -29,6 +29,6 @@ export class ValidateNotesPipe
     // add version and create note instances
     value.forEach((note) => (note.version = version));
 
-    return value as NewNoteDto[];
+    return value as UpdateNoteDto[];
   }
 }

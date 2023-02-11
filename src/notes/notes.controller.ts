@@ -7,16 +7,18 @@ import {
   Param,
   Get,
   Delete,
-  ParseArrayPipe,
+  // ParseArrayPipe,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { NewNoteDto } from './dtos/newNote.dto';
-import { UpdateNoteDto } from './dtos/updateNote.dto';
+// import { NewNoteDto } from './dtos/newNote.dto';
+// import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
+import { ValidateUpdateNotesPipe } from './pipes/validate-update-notes.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
-import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
+import { UpdateNoteDto } from './dtos/updateNote.dto';
+// import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
@@ -37,7 +39,7 @@ export class NotesController {
 
   @Patch('/')
   async updateBulkNotes(
-    @Body(ValidateNotesPipe) updateNotes: Note[],
+    @Body(ValidateUpdateNotesPipe) updateNotes: UpdateNoteDto[],
   ): Promise<void> {
     return await this.notesService.updateBulkNotes(updateNotes);
   }
@@ -50,16 +52,8 @@ export class NotesController {
   //   return await this.notesService.updateNote(note, noteDto);
   // }
 
-  @Delete('/')
-  async deleteBulkNotes(
-    @Body(new ParseArrayPipe({ items: String }))
-    deletedNoteIds: string[],
-  ): Promise<void> {
-    return await this.notesService.deleteBulkNotes(deletedNoteIds);
+  @Delete('/:id')
+  async deleteNote(@Param('id') id: string): Promise<void> {
+    return await this.notesService.deleteNote(id);
   }
-
-  // @Delete('/:id')
-  // async deleteNote(@Param('id') id: string): Promise<void> {
-  //   return await this.notesService.deleteNote(id);
-  // }
 }

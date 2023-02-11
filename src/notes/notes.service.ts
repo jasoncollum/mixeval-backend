@@ -29,7 +29,7 @@ export class NotesService {
   //   return await this.notesRepository.save(note);
   // }
 
-  async updateBulkNotes(updateNotes: Note[]): Promise<void> {
+  async updateBulkNotes(updateNotes: UpdateNoteDto[]): Promise<void> {
     try {
       await this.notesRepository.upsert(updateNotes, ['id']);
     } catch (error) {
@@ -37,20 +37,12 @@ export class NotesService {
     }
   }
 
-  async deleteBulkNotes(deletedNoteIds: string[]): Promise<void> {
-    try {
-      await this.notesRepository.delete(deletedNoteIds);
-    } catch (error) {
-      // throw new NotFoundException('Note not found');
+  async deleteNote(id: string): Promise<void> {
+    const result = await this.notesRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Note not found');
     }
   }
-
-  // async deleteNote(id: string): Promise<void> {
-  //   const result = await this.notesRepository.delete(id);
-  //   if (result.affected === 0) {
-  //     throw new NotFoundException('Note not found');
-  //   }
-  // }
 
   async addVersionToNotes(newNotes: NewNoteDto[]): Promise<Note[]> {
     const versionId = newNotes[0].versionId;

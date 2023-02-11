@@ -10,4 +10,6 @@ export class UpdateNoteDto {
 
   @IsString()
   versionId: string;
+
+  version: Version;
 }
