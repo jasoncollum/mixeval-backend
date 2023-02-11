@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { Version } from 'src/versions/version.entity';
 
 export class UpdateNoteDto {
   @IsString()

@@ -25,9 +25,8 @@ export class NotesController {
 
   @Post('/')
   async createBulkNotes(
-    @Body(ValidateNotesPipe) newNotes: NewNoteDto[],
+    @Body(ValidateNotesPipe) newNotes: Note[],
   ): Promise<void> {
-    console.log('FIRST NOTE', newNotes[0]);
     return await this.notesService.createBulkNotes(newNotes);
   }
 
@@ -38,10 +37,8 @@ export class NotesController {
 
   @Patch('/')
   async updateBulkNotes(
-    @Body(TakesArrayReturnsNotesArrayPipe)
-    updateNotes: UpdateNoteDto[],
+    @Body(ValidateNotesPipe) updateNotes: Note[],
   ): Promise<void> {
-    console.log('CONTROLLER::', updateNotes);
     return await this.notesService.updateBulkNotes(updateNotes);
   }
 

@@ -29,10 +29,9 @@ export class NotesService {
   //   return await this.notesRepository.save(note);
   // }
 
-  async updateBulkNotes(updateNotes: UpdateNoteDto[]): Promise<void> {
+  async updateBulkNotes(updateNotes: Note[]): Promise<void> {
     try {
-      // await this.notesRepository.upsert(updateNotes, ['id']);
-      await this.notesRepository.save(updateNotes);
+      await this.notesRepository.upsert(updateNotes, ['id']);
     } catch (error) {
       // add a custom exception message here ?
     }
@@ -68,4 +67,28 @@ export class NotesService {
     });
     return validatedNotes;
   }
+
+  // async validateUpdateNotes(updateNotes): Promise<Note[]> {
+  //   const validatedNotes: Promise[] = updateNotes.map(
+  //     async (note: UpdateNoteDto): Promise<Partial<Note>> => {
+  //       const foundNote = await this.notesRepository.findOne({
+  //         where: {
+  //           id: note.id,
+  //         },
+  //       });
+
+  //       if (!foundNote) {
+  //         throw new NotFoundException('Note not found');
+  //       }
+  //       console.log('LAST:', foundNote);
+  //       return {
+  //         id: foundNote.id,
+  //         text: note.text,
+  //         versionId: foundNote.versionId,
+  //       };
+  //     },
+  //   );
+  //   console.log('VAL NOTES:', validatedNotes);
+  //   return validatedNotes;
+  // }
 }

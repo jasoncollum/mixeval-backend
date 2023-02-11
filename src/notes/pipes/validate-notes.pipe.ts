@@ -4,10 +4,11 @@ import { Version } from '../../versions/version.entity';
 import { Repository } from 'typeorm';
 import { NewNoteDto } from '../dtos/newNote.dto';
 import { Note } from '../note.entity';
+import { UpdateNoteDto } from '../dtos/updateNote.dto';
 
 @Injectable()
 export class ValidateNotesPipe
-  implements PipeTransform<NewNoteDto[], Promise<Note[]>>
+  implements PipeTransform<NewNoteDto[] | UpdateNoteDto[], Promise<Note[]>>
 {
   constructor(
     @InjectRepository(Version)
@@ -15,7 +16,7 @@ export class ValidateNotesPipe
     @InjectRepository(Note)
     private notesRepository: Repository<Note>,
   ) {}
-  async transform(value: NewNoteDto[]): Promise<Note[]> {
+  async transform(value: NewNoteDto[] | UpdateNoteDto[]): Promise<Note[]> {
     const version = await this.versionsRepository.findOne({
       where: {
         id: value[0].versionId,
