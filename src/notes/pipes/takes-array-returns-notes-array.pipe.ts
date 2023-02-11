@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from '../../notes/note.entity';
 import { Version } from '../../versions/version.entity';
 import { Repository } from 'typeorm';
-import { NoteDto } from '../dtos/note.dto';
+import { NewNoteDto } from '../dtos/newNote.dto';
 
 @Injectable()
 export class TakesArrayReturnsNotesArrayPipe
-  implements PipeTransform<NoteDto[], Promise<NoteDto[]>>
+  implements PipeTransform<NewNoteDto[], Promise<NewNoteDto[]>>
 {
   constructor(
     @InjectRepository(Note)
@@ -15,25 +15,25 @@ export class TakesArrayReturnsNotesArrayPipe
     @InjectRepository(Version)
     private versionsRepository: Repository<Version>,
   ) {}
-  async transform(value: NoteDto[]): Promise<NoteDto[]> {
-    const version = await this.versionsRepository
-      .createQueryBuilder('version')
-      .where('version.id = :id', { id: value[0].versionId })
-      .getOne();
+  async transform(value: NewNoteDto[]): Promise<NewNoteDto[]> {
+    // const version = this.versionsRepository
+    //   .createQueryBuilder('version')
+    //   .andWhere('version.id = :versionId', { versionId: value[0].versionId })
+    //   .getOne();
 
-    if (!version) {
-      throw new NotFoundException('Version not found');
-    }
+    // if (!version) {
+    //   throw new NotFoundException('Version not found');
+    // }
 
     // 1) create note instances and 2)include version (a validation step)
-    const noteInstances: NoteDto[] = value.map((note) => {
+    const noteInstances: NewNoteDto[] = value.map((note) => {
       return this.notesRepository.create({
         ...note,
-        version: version,
       });
     });
 
     value = noteInstances;
+    return value;
     return value;
   }
 }

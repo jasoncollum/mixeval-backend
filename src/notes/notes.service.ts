@@ -1,22 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { NoteDto } from './dtos/note.dto';
+import { NewNoteDto } from './dtos/newNote.dto';
 import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Version } from 'src/versions/version.entity';
 
 @Injectable()
 export class NotesService {
   constructor(
     @InjectRepository(Note)
     private notesRepository: Repository<Note>,
+    @InjectRepository(Version)
+    private versionsRepository: Repository<Version>,
   ) {}
 
-  async createBulkNotes(newNotes: NoteDto[]): Promise<NoteDto[]> {
+  async createBulkNotes(newNotes: NewNoteDto[]): Promise<void> {
     try {
-      // NoteDro now has instances of note via repo create method in pipe
-      return await this.notesRepository.save(newNotes);
+      await this.notesRepository.save(newNotes);
     } catch (error) {
+      console.log(error);
       // add a custom exception message here ?
     }
   }
@@ -49,4 +52,20 @@ export class NotesService {
   //     throw new NotFoundException('Note not found');
   //   }
   // }
+
+  async addVersionToNotes(newNotes: NewNoteDto[]): Promise<Note[]> {
+    const versionId = newNotes[0].versionId;
+    const version = await this.versionsRepository.findOne({
+      where: {
+        id: versionId,
+      },
+    });
+    const validatedNotes: Note[] = newNotes.map((note: Note) => {
+      return {
+        ...note,
+        version: version,
+      };
+    });
+    return validatedNotes;
+  }
 }

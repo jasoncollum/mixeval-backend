@@ -10,11 +10,11 @@ import {
   ParseArrayPipe,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { NoteDto } from './dtos/note.dto';
+import { NewNoteDto } from './dtos/newNote.dto';
 import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-// import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
+import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
 import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
@@ -25,12 +25,9 @@ export class NotesController {
 
   @Post('/')
   async createBulkNotes(
-    @Body(
-      // new ParseArrayPipe({ items: NoteDto }),
-      TakesArrayReturnsNotesArrayPipe,
-    )
-    newNotes: NoteDto[],
-  ): Promise<NoteDto[]> {
+    @Body(ValidateNotesPipe) newNotes: NewNoteDto[],
+  ): Promise<void> {
+    console.log('FIRST NOTE', newNotes[0]);
     return await this.notesService.createBulkNotes(newNotes);
   }
 
