@@ -7,13 +7,18 @@ import {
   Param,
   Get,
   Delete,
+  // ParseArrayPipe,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { NoteDto } from './dtos/note.dto';
+// import { NewNoteDto } from './dtos/newNote.dto';
+// import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { TakesVersionIdReturnsVersionPipe } from './pipes/takes-versionId-returns-version.pipe';
+import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
+import { ValidateUpdateNotesPipe } from './pipes/validate-update-notes.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
+import { UpdateNoteDto } from './dtos/updateNote.dto';
+// import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
@@ -21,10 +26,10 @@ export class NotesController {
   constructor(private notesService: NotesService) {}
 
   @Post('/')
-  async createNote(
-    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
-  ): Promise<Note> {
-    return await this.notesService.createNote(noteDto);
+  async createBulkNotes(
+    @Body(ValidateNotesPipe) newNotes: Note[],
+  ): Promise<void> {
+    return await this.notesService.createBulkNotes(newNotes);
   }
 
   @Get('/:id')
@@ -32,13 +37,20 @@ export class NotesController {
     return note;
   }
 
-  @Patch('/:id')
-  async updateNote(
-    @Param('id', NoteByIdPipe) note: Note,
-    @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
-  ): Promise<Note> {
-    return await this.notesService.updateNote(note, noteDto);
+  @Patch('/')
+  async updateBulkNotes(
+    @Body(ValidateUpdateNotesPipe) updateNotes: UpdateNoteDto[],
+  ): Promise<void> {
+    return await this.notesService.updateBulkNotes(updateNotes);
   }
+
+  // @Patch('/:id')
+  // async updateNote(
+  //   @Param('id', NoteByIdPipe) note: Note,
+  //   @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
+  // ): Promise<Note> {
+  //   return await this.notesService.updateNote(note, noteDto);
+  // }
 
   @Delete('/:id')
   async deleteNote(@Param('id') id: string): Promise<void> {

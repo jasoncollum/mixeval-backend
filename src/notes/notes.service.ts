@@ -1,42 +1,40 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
-import { NoteDto } from './dtos/note.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { NewNoteDto } from './dtos/newNote.dto';
+import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Version } from 'src/versions/version.entity';
 
 @Injectable()
 export class NotesService {
   constructor(
     @InjectRepository(Note)
     private notesRepository: Repository<Note>,
+    @InjectRepository(Version)
+    private versionsRepository: Repository<Version>,
   ) {}
 
-  async createNote(noteDto: NoteDto): Promise<Note> {
-    const alreadyExists = noteDto.version.notes.filter(
-      (note) => note.text === noteDto.text,
-    );
-
-    if (alreadyExists.length > 0) {
-      throw new ConflictException(`This mix note already exists`);
-    }
-
-    const note = this.notesRepository.create({
-      text: noteDto.text,
-      version: noteDto.version,
-    });
-
+  async createBulkNotes(newNotes: NewNoteDto[]): Promise<void> {
     try {
-      return await this.notesRepository.save(note);
-    } catch (error) {}
+      await this.notesRepository.save(newNotes);
+    } catch (error) {
+      console.log(error);
+      // add a custom exception message here ?
+    }
   }
 
-  async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {
-    Object.assign(note, attrs);
-    return await this.notesRepository.save(note);
+  // async updateNote(note: Note, attrs: Partial<Note>): Promise<Note> {
+  //   Object.assign(note, attrs);
+  //   return await this.notesRepository.save(note);
+  // }
+
+  async updateBulkNotes(updateNotes: UpdateNoteDto[]): Promise<void> {
+    try {
+      await this.notesRepository.upsert(updateNotes, ['id']);
+    } catch (error) {
+      // add a custom exception message here ?
+    }
   }
 
   async deleteNote(id: string): Promise<void> {
@@ -45,4 +43,44 @@ export class NotesService {
       throw new NotFoundException('Note not found');
     }
   }
+
+  async addVersionToNotes(newNotes: NewNoteDto[]): Promise<Note[]> {
+    const versionId = newNotes[0].versionId;
+    const version = await this.versionsRepository.findOne({
+      where: {
+        id: versionId,
+      },
+    });
+    const validatedNotes: Note[] = newNotes.map((note: Note) => {
+      return {
+        ...note,
+        version: version,
+      };
+    });
+    return validatedNotes;
+  }
+
+  // async validateUpdateNotes(updateNotes): Promise<Note[]> {
+  //   const validatedNotes: Promise[] = updateNotes.map(
+  //     async (note: UpdateNoteDto): Promise<Partial<Note>> => {
+  //       const foundNote = await this.notesRepository.findOne({
+  //         where: {
+  //           id: note.id,
+  //         },
+  //       });
+
+  //       if (!foundNote) {
+  //         throw new NotFoundException('Note not found');
+  //       }
+  //       console.log('LAST:', foundNote);
+  //       return {
+  //         id: foundNote.id,
+  //         text: note.text,
+  //         versionId: foundNote.versionId,
+  //       };
+  //     },
+  //   );
+  //   console.log('VAL NOTES:', validatedNotes);
+  //   return validatedNotes;
+  // }
 }
