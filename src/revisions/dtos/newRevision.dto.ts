@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
 import { Note } from '../../notes/note.entity';
 
-export class RevisionDto {
+export class NewRevisionDto {
   @IsString()
   text: string;
 

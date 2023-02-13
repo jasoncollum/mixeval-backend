@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { RevisionDto } from './dtos/revision.dto';
+import { NewRevisionDto } from './dtos/newRevision.dto';
 import { Revision } from './revision.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,24 +15,12 @@ export class RevisionsService {
     private revisionsRepository: Repository<Revision>,
   ) {}
 
-  async createRevision(revisionDto: RevisionDto): Promise<Revision> {
-    const alreadyExists = revisionDto.note.revisions.filter(
-      (revision) => revision.text === revisionDto.text,
-    );
-
-    if (alreadyExists.length > 0) {
-      throw new ConflictException(
-        `This specific revision already exists for this note`,
-      );
-    }
-
-    const revision = this.revisionsRepository.create({
-      text: revisionDto.text,
-      note: revisionDto.note,
-    });
+  async createBulkRevisions(newRevisions: NewRevisionDto[]): Promise<void> {
     try {
-      return await this.revisionsRepository.save(revision);
-    } catch (error) {}
+      await this.revisionsRepository.save(newRevisions);
+    } catch (error) {
+      // add error messaging
+    }
   }
 
   async updateRevision(

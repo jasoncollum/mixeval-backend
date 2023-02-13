@@ -64,7 +64,7 @@ export class ArtistsService {
         .andWhere('s.isOpen = :hasOpenSongs', { hasOpenSongs })
         .orderBy('s.updated_at', 'DESC')
         .addOrderBy('v.number', 'DESC')
-        .addOrderBy('n.created_at', 'ASC')
+        .addOrderBy('n.created_at', 'DESC')
         .addOrderBy('r.created_at', 'ASC')
         .getMany();
 
