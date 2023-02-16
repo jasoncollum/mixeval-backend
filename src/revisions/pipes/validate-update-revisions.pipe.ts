@@ -2,12 +2,12 @@ import { Injectable, PipeTransform, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from '../../notes/note.entity';
 import { Repository } from 'typeorm';
-import { NewRevisionDto } from '../dtos/newRevision.dto';
+import { UpdateRevisionDto } from '../dtos/update-revision.dto';
 import { Revision } from '../revision.entity';
 
 @Injectable()
-export class ValidateRevisionsPipe
-  implements PipeTransform<NewRevisionDto[], Promise<NewRevisionDto[]>>
+export class ValidateUpdateRevisionsPipe
+  implements PipeTransform<UpdateRevisionDto[], Promise<UpdateRevisionDto[]>>
 {
   constructor(
     @InjectRepository(Note)
@@ -15,7 +15,8 @@ export class ValidateRevisionsPipe
     @InjectRepository(Revision)
     private revisionsRepository: Repository<Revision>,
   ) {}
-  async transform(value: NewRevisionDto[]): Promise<NewRevisionDto[]> {
+  async transform(value: UpdateRevisionDto[]): Promise<UpdateRevisionDto[]> {
+    // if only one update note::
     if (value.length === 1) {
       const note = await this.notesRepository.findOne({
         where: {
@@ -28,6 +29,8 @@ export class ValidateRevisionsPipe
       value[0].note = note;
       return value;
     }
+
+    // if more than one updated note::
     let uniqueIds = [] as string[];
     const noteIds = value.map((revision) => {
       return revision.noteId;
@@ -40,7 +43,6 @@ export class ValidateRevisionsPipe
       .createQueryBuilder('note')
       .where('note.id IN (:...uniqueIds)', { uniqueIds: uniqueIds })
       .getMany();
-    console.log(notes);
 
     value.forEach((revision) => {
       const revNote = notes.find((note) => note.id === revision.noteId);
