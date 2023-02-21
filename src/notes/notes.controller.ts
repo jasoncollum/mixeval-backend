@@ -14,10 +14,11 @@ import { NotesService } from './notes.service';
 // import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
+// import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
 import { ValidateUpdateNotesPipe } from './pipes/validate-update-notes.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
-import { UpdateNoteDto } from './dtos/updateNote.dto';
+import { UpdateNoteDto } from './dtos/update-note.dto';
+import { CreateNoteDto } from './dtos/create-note.dto';
 // import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
 @Controller('notes')
@@ -26,10 +27,8 @@ export class NotesController {
   constructor(private notesService: NotesService) {}
 
   @Post('/')
-  async createBulkNotes(
-    @Body(ValidateNotesPipe) newNotes: Note[],
-  ): Promise<void> {
-    return await this.notesService.createBulkNotes(newNotes);
+  async createNote(@Body() createNoteDto: CreateNoteDto): Promise<Note> {
+    return await this.notesService.createNote(createNoteDto);
   }
 
   @Get('/:id')
@@ -43,14 +42,6 @@ export class NotesController {
   ): Promise<void> {
     return await this.notesService.updateBulkNotes(updateNotes);
   }
-
-  // @Patch('/:id')
-  // async updateNote(
-  //   @Param('id', NoteByIdPipe) note: Note,
-  //   @Body(TakesVersionIdReturnsVersionPipe) noteDto: NoteDto,
-  // ): Promise<Note> {
-  //   return await this.notesService.updateNote(note, noteDto);
-  // }
 
   @Delete('/:id')
   async deleteNote(@Param('id') id: string): Promise<void> {

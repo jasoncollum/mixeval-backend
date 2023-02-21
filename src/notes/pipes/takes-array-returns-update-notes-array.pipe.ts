@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from '../../notes/note.entity';
 import { Version } from '../../versions/version.entity';
 import { Repository } from 'typeorm';
-import { UpdateNoteDto } from '../dtos/updateNote.dto';
+import { UpdateNoteDto } from '../dtos/update-note.dto';
 
 @Injectable()
 export class TakesArrayReturnsNotesArrayPipe

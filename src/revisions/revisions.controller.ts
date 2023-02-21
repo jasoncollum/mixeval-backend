@@ -8,23 +8,33 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { RevisionDto } from './dtos/revision.dto';
+import { CreateRevisionDto } from './dtos/create-revision.dto';
 import { RevisionsService } from './revisions.service';
 import { Revision } from './revision.entity';
+import { ValidateCreateRevisionsPipe } from './pipes/validate-create-revisions.pipe';
+import { ValidateUpdateRevisionsPipe } from './pipes/validate-update-revisions.pipe';
 import { AuthGuard } from '@nestjs/passport';
-import { TakesNoteIdReturnsNotePipe } from './pipes/takes-noteId-returns-note.pipe';
+// import { TakesNoteIdReturnsNotePipe } from './pipes/takes-noteId-returns-note.pipe';
 import { RevisionByIdPipe } from './pipes/revision-by-id.pipe';
+import { UpdateRevisionDto } from './dtos/update-revision.dto';
 
 @Controller('revisions')
 @UseGuards(AuthGuard())
 export class RevisionsController {
   constructor(private revisionsService: RevisionsService) {}
 
+  // @Post('/')
+  // async createRevision(
+  //   @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
+  // ): Promise<Revision> {
+  //   return await this.revisionsService.createRevision(revisionDto);
+  // }
+
   @Post('/')
-  async createRevision(
-    @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
-  ): Promise<Revision> {
-    return await this.revisionsService.createRevision(revisionDto);
+  async createBulkNotes(
+    @Body(ValidateCreateRevisionsPipe) createRevisionDto: CreateRevisionDto[],
+  ): Promise<void> {
+    return await this.revisionsService.createBulkRevisions(createRevisionDto);
   }
 
   @Get('/:id')
@@ -34,13 +44,20 @@ export class RevisionsController {
     return revision;
   }
 
-  @Patch('/:id')
-  async updateRevision(
-    @Param('id', RevisionByIdPipe) revision: Revision,
-    @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
-  ): Promise<Revision> {
-    return await this.revisionsService.updateRevision(revision, revisionDto);
+  @Patch('/')
+  async updateBulkNotes(
+    @Body(ValidateUpdateRevisionsPipe) updateRevisionDto: UpdateRevisionDto[],
+  ): Promise<void> {
+    return await this.revisionsService.updateBulkRevisions(updateRevisionDto);
   }
+
+  // @Patch('/:id')
+  // async updateRevision(
+  //   @Param('id', RevisionByIdPipe) revision: Revision,
+  //   @Body(TakesNoteIdReturnsNotePipe) revisionDto: RevisionDto,
+  // ): Promise<Revision> {
+  //   return await this.revisionsService.updateRevision(revision, revisionDto);
+  // }
 
   @Delete('/:id')
   async deleteRevision(@Param('id') id: string): Promise<void> {

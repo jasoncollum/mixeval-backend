@@ -22,6 +22,9 @@ export class Revision {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column()
+  noteId: string;
+
   @ManyToOne(() => Note, (note) => note.revisions, { onDelete: 'CASCADE' })
   note: Note;
 }
