@@ -6,6 +6,9 @@ export class CreateVersionDto {
   number: number;
 
   @IsString()
+  audioFilename: string;
+
+  @IsString()
   songId: string;
 
   song: Song;

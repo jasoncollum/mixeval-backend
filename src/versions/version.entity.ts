@@ -20,6 +20,9 @@ export class Version {
   @Column()
   number: number;
 
+  @Column()
+  audioFileName: string;
+
   @CreateDateColumn()
   created_at: Date;
 
