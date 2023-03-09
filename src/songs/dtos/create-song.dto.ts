@@ -12,4 +12,7 @@ export class CreateSongDto {
   artistId: string;
 
   artist: Artist;
+
+  @IsString()
+  audioFileNameForVersion: string;
 }

@@ -5,5 +5,8 @@ export class UpdateVersionDto {
   number: number;
 
   @IsString()
+  audioFileName: string;
+
+  @IsString()
   songId: string;
 }

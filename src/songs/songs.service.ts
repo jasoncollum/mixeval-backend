@@ -23,13 +23,14 @@ export class SongsService {
       isOpen: createSongDto.isOpen,
       artist: createSongDto.artist,
     });
-
     try {
       const savedSong = await this.songsRepository.save(song);
+
       // if song successfully created, create mix version 1
       if (savedSong.id) {
         const version1 = await this.versionsService.createVersion({
           number: 1,
+          audioFileName: createSongDto.audioFileNameForVersion,
           songId: savedSong.id,
           song: savedSong,
         });
