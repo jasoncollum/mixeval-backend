@@ -31,6 +31,7 @@ export class VersionsService {
 
     const version = this.versionsRepository.create({
       number: createVersionDto.number,
+      audioFileName: createVersionDto.audioFileName,
       song: createVersionDto.song,
     });
 

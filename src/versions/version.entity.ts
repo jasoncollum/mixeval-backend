@@ -20,7 +20,7 @@ export class Version {
   @Column()
   number: number;
 
-  @Column()
+  @Column({ nullable: true })
   audioFileName: string;
 
   @CreateDateColumn()
