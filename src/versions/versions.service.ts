@@ -19,16 +19,6 @@ export class VersionsService {
   ) {}
 
   async createVersion(createVersionDto: CreateVersionDto): Promise<Version> {
-    // const alreadyExists = createVersionDto.song.versions.filter(
-    //   (version) => version.number === createVersionDto.number,
-    // );
-
-    // if (alreadyExists.length > 0) {
-    //   throw new ConflictException(
-    //     `${createVersionDto.song.title} already has a Mix Version # ${createVersionDto.number}`,
-    //   );
-    // }
-
     const version = this.versionsRepository.create({
       number: createVersionDto.number,
       audioFileName: createVersionDto.audioFileName,
