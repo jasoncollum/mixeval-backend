@@ -23,6 +23,7 @@ export class RevisionsService {
       await this.revisionsRepository.save(createRevisionDto);
     } catch (error) {
       // add error messaging
+      console.log(error);
     }
   }
 
@@ -33,6 +34,7 @@ export class RevisionsService {
       await this.revisionsRepository.upsert(updateRevisionDto, ['id']);
     } catch (error) {
       // add a custom exception message here ?
+      console.log(error);
     }
   }
 

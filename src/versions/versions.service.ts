@@ -34,6 +34,7 @@ export class VersionsService {
         );
       } else {
         return error;
+        console.log(error);
       }
     }
   }

@@ -17,7 +17,6 @@ export class NotesService {
 
   async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
     const note = this.notesRepository.create(createNoteDto);
-    console.log('NEW NOTE - SERVICE (CREATE)::', note);
     return await this.notesRepository.save(note);
   }
 
@@ -26,6 +25,7 @@ export class NotesService {
       await this.notesRepository.upsert(updateNotes, ['id']);
     } catch (error) {
       // add a custom exception message here ?
+      console.log(error);
     }
   }
 
