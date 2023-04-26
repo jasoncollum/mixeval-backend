@@ -12,7 +12,7 @@ export class VersionByIdPipe
     private versionsRepository: Repository<Version>,
   ) {}
   async transform(value: string): Promise<Version> {
-    const version = await this.versionsRepository.findOne(value);
+    const version = await this.versionsRepository.findOneBy({ id: value });
     if (!version) {
       throw new NotFoundException('Version not found');
     }

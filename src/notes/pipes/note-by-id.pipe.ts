@@ -10,7 +10,7 @@ export class NoteByIdPipe implements PipeTransform<string, Promise<Note>> {
     private notesRepository: Repository<Note>,
   ) {}
   async transform(value: string): Promise<Note> {
-    const note = await this.notesRepository.findOne(value);
+    const note = await this.notesRepository.findOneBy({ id: value });
     if (!note) {
       throw new NotFoundException('Note not found');
     }

@@ -10,7 +10,7 @@ export class ArtistByIdPipe implements PipeTransform<string, Promise<Artist>> {
     private artistsRepository: Repository<Artist>,
   ) {}
   async transform(value: string): Promise<Artist> {
-    const artist = await this.artistsRepository.findOne(value);
+    const artist = await this.artistsRepository.findOneBy({ id: value });
 
     if (!artist) {
       throw new NotFoundException('Artist not found');
