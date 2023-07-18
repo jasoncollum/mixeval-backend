@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRevisionDto } from './dtos/create-revision.dto';
 import { Revision } from './revision.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -37,14 +33,6 @@ export class RevisionsService {
       console.log(error);
     }
   }
-
-  // async updateRevision(
-  //   revision: Revision,
-  //   attrs: Partial<Revision>,
-  // ): Promise<Revision> {
-  //   Object.assign(revision, attrs);
-  //   return await this.revisionsRepository.save(revision);
-  // }
 
   async deleteRevision(id: string): Promise<void> {
     const result = await this.revisionsRepository.delete(id);

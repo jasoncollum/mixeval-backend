@@ -7,19 +7,14 @@ import {
   Param,
   Get,
   Delete,
-  // ParseArrayPipe,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
-// import { NewNoteDto } from './dtos/newNote.dto';
-// import { UpdateNoteDto } from './dtos/updateNote.dto';
 import { Note } from './note.entity';
 import { AuthGuard } from '@nestjs/passport';
-// import { ValidateNotesPipe } from './pipes/validate-notes.pipe';
 import { ValidateUpdateNotesPipe } from './pipes/validate-update-notes.pipe';
 import { NoteByIdPipe } from './pipes/note-by-id.pipe';
 import { UpdateNoteDto } from './dtos/update-note.dto';
 import { CreateNoteDto } from './dtos/create-note.dto';
-// import { TakesArrayReturnsNotesArrayPipe } from './pipes/takes-array-returns-notes-array.pipe';
 
 @Controller('notes')
 @UseGuards(AuthGuard())
